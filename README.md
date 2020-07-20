@@ -12,7 +12,9 @@ A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
 `npm run start-api`
 
-Starts the flask backend on localhost:5000, React frontend on localhost:3000. Python virtual environment should be running. 
+Starts the flask backend on localhost:5000, React frontend on localhost:3000. 
+
+To do so, your python virtual environment should already have all dependencies installed.  
 
 <!-- This should be done after `npm start` has been run to test the application with both the frontend and backend -->
 
@@ -23,4 +25,10 @@ Starts the flask backend on localhost:5000, React frontend on localhost:3000. Py
 `source venv/bin/activate`
 
 `pip install -r requirements.txt`
+
+### Adding a python dependency:
+
+While in your virtual environment, run the following: 
+
+`pip freeze > requirements.txt`
 
