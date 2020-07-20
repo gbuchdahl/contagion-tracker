@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 
-import { Container, Hero } from 'react-bulma-components' 
+import { Container, Hero, Tabs, Columns } from 'react-bulma-components' 
 
 
 function App() {
 
   const [currentTime, setCurrentTime] = useState(0);
+  const [location, setLocation] = useState("USA");
 
   useEffect(() => {
     fetch('/time').then(res => res.json()).then(data => {
@@ -18,31 +18,33 @@ function App() {
 
   return (
     <div className="App">
-        <Hero>
+        <Hero className='is-warning'>
           <Container className="hero-body">
             <h1 className='title'>
               Contagion Tracker
             </h1>
-            <p>The current time is {Date(currentTime).toLocaleString()}.</p>
           </Container>
         </Hero>
+        <Container className='is-centered'>
+          <Columns>
+            <Columns.Column />
+            <Columns.Column>
+              <Tabs className='is-centered'>
+                  <ul>
+                    <li className={(location === "USA") ? "is-active" : ""}><a onClick={() => setLocation("USA")}>US Data</a></li>
+                    <li className={(location === "Global") ? "is-active" : ""}><a onClick={() => setLocation("Global")}>Global Data</a></li>
+                  </ul>
+               </Tabs>
+               <h1 className='is-title is-1'>{(location==="USA") ? "US MAP" : "WORLD MAP"}</h1>
+            </Columns.Column>
+            <Columns.Column />
+          </Columns>
+
+
+        </Container>
+
     </div>
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
+
   );
 }
 
