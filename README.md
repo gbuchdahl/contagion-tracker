@@ -8,9 +8,9 @@ A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
 `source venv/bin/activate`
 
-`yarn start`
+`npm start`
 
-`yarn start-api`
+`npm start-api`
 
 Starts the flask backend on localhost:5000, React frontend on localhost:3000. Python virtual environment should be running. 
 
