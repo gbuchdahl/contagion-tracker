@@ -1,6 +1,6 @@
 # Contagion Tracker
 
-Visualizing the spread of all types of infections. 
+Visualizing the spread of all types of infections.
 
 A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
@@ -12,9 +12,9 @@ A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
 `npm run start-api`
 
-Starts the flask backend on localhost:5000, React frontend on localhost:3000. 
+Starts the flask backend on localhost:5000, React frontend on localhost:3000.
 
-To do so, your python virtual environment should already have all dependencies installed.  
+To do so, your python virtual environment should already have all dependencies installed.
 
 <!-- This should be done after `npm start` has been run to test the application with both the frontend and backend -->
 
@@ -28,7 +28,6 @@ To do so, your python virtual environment should already have all dependencies i
 
 ### Adding a python dependency:
 
-While in your virtual environment, run the following: 
+While in your virtual environment, run the following:
 
 `pip freeze > requirements.txt`
-
