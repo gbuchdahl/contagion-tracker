@@ -10,7 +10,7 @@ A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
 `npm start`
 
-`npm start-api`
+`npm run start-api`
 
 Starts the flask backend on localhost:5000, React frontend on localhost:3000. Python virtual environment should be running. 
 
