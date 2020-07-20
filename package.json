@@ -9,7 +9,8 @@
     "react": "^16.13.1",
     "react-bulma-components": "^3.4.0",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-simple-maps": "^2.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -33,5 +34,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "devDependencies": {
+    "prettier": "2.0.5"
+  }
 }
