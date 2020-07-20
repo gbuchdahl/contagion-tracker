@@ -31,3 +31,7 @@ To do so, your python virtual environment should already have all dependencies i
 While in your virtual environment, run the following:
 
 `pip freeze > requirements.txt`
+
+## To format:
+
+`npm run prettier`
