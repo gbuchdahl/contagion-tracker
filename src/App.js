@@ -30,9 +30,11 @@ function App() {
           </Columns.Column>
           <Columns.Column />
         </Columns>
-        <h1 className="is-title is-1">
-          {location === "USA" ? <USMap /> : <WorldMap />}
-        </h1>
+        <Columns>
+          <Columns.Column className="is-three-fifths is-offset-one-fifth">
+            {location === "USA" ? <USMap /> : <WorldMap />}
+          </Columns.Column>
+        </Columns>
       </Container>
     </div>
   );
