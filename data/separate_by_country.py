@@ -3,10 +3,8 @@ import getpass
 import csv
 from datetime import datetime
 
-#user = input("DB User: ")
-#password = getpass.getpass()
 user = "root"
-password = "contagion"
+password = getpass.getpass()
 uri = "mongodb+srv://{}:{}@data.ybs5g.mongodb.net/?retryWrites=true&w=majority".format(user, password)
 
 client = MongoClient(uri)
