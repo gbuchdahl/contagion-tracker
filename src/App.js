@@ -9,7 +9,7 @@ import WorldMap from "./components/WorldMap";
 import { Container, Tabs, Columns } from "react-bulma-components";
 
 function App() {
-  const [location, setLocation] = useState("USA");
+  const [location, setLocation] = useState("Global");
 
   return (
     <div className="App">

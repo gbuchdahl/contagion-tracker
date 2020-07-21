@@ -14,7 +14,7 @@ A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
 Starts the flask backend on localhost:5000, React frontend on localhost:3000.
 
-To do so, your python virtual environment should already have all dependencies installed and the config file should already have been created. 
+To do so, your python virtual environment should already have all dependencies installed and the config file should already have been created.
 
 <!-- This should be done after `npm start` has been run to test the application with both the frontend and backend -->
 
