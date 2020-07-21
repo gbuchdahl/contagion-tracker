@@ -11,7 +11,7 @@ def set_db(app):
 def get_by_state_and_date(stateAbbrv, date):
     res = db_.covid_us.find_one(
             {
-                "state_abbrv": stateAbbrv.upper(),
+                "state_code": stateAbbrv.upper(),
                 "date": date
             })
 
