@@ -10838,6 +10838,7 @@ a.has-text-danger-dark:focus {
   background-color: #fafafa;
   padding: 3rem 1.5rem 6rem;
 }
+<<<<<<< HEAD
 
 input[type="range"].slider {
   appearance: none;
@@ -11378,3 +11379,5 @@ input[type="range"].slider.is-danger .has-output-tooltip + output {
   background-color: #f14668;
   color: #fff;
 }
+=======
+>>>>>>> node-sass styles
