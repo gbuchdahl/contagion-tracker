@@ -12,7 +12,6 @@ def set_db(app):
         raise RuntimeError("db_ not created")
 
 
-
 def get_by_state_and_date(stateCode, date):
     """
     return document from db_.covid_us with 'state_code' field

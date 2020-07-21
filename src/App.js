@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // import './App.css';
-import "react-bulma-components/dist/react-bulma-components.min.css";
+// import "react-bulma-components/dist/react-bulma-components.min.css";
+import "./css/main.css";
 import Banner from "./components/Banner";
 import USMap from "./components/USMap";
 import WorldMap from "./components/WorldMap";
@@ -8,7 +9,7 @@ import WorldMap from "./components/WorldMap";
 import { Container, Tabs, Columns } from "react-bulma-components";
 
 function App() {
-  const [location, setLocation] = useState("USA");
+  const [location, setLocation] = useState("Global");
 
   return (
     <div className="App">
@@ -17,7 +18,7 @@ function App() {
         <Columns>
           <Columns.Column />
           <Columns.Column>
-            <Tabs className="is-centered">
+            <Tabs className="is-centered is-boxed">
               <ul>
                 <li className={location === "USA" ? "is-active" : ""}>
                   <a onClick={() => setLocation("USA")}>US Data</a>
