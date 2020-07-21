@@ -4,7 +4,6 @@ def set_db(app):
     global db_
     db_ = PyMongo(app).db
 
-
 def get_by_state_and_date(stateAbbrv, date):
     return db_.covid_us.find_one(
             {
