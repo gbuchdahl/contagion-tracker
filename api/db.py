@@ -7,7 +7,6 @@ def set_db(app):
     if db_ is None:
         raise RuntimeError("db_ not created")
 
-
 def get_by_state_and_date(stateAbbrv, date):
     res = db_.covid_us.find_one(
             {
