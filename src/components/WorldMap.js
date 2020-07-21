@@ -10,8 +10,9 @@ const epoch = new Date(2020, 0, 1);
 
 const num_days = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 
+// make the slider not move instantly
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 class WorldMap extends Component {
@@ -20,25 +21,44 @@ class WorldMap extends Component {
     this.state = {
       slider_val: 0,
       date: epoch,
+      playing: false,
     };
     this.handleSlider = this.handleSlider.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
   }
 
+  // function to update the date by moving the slider
   handleSlider = (e) => {
+    this.setState({ playing: false });
     let newDate = new Date(2020, 0, e.target.value);
     this.setState({ slider_val: e.target.value, date: newDate });
   };
 
-  handlePlay = (e) => {
-    console.log("BOOM")
-    // while (this.state.slider_val < num_days) {
-    let new_val = parseInt(this.state.slider_val) + 1;
-    let new_date = new Date(2020, 0, new_val);
-    this.setState({ slider_val: new_val, date: new_date });
-    sleep(50);
-    // }
-  };
+  // handles the play button
+  async handlePlay() {
+    let playing = this.state.playing;
+    // if it was paused before
+    if (!playing) {
+      this.setState({ playing: true });
+      let start = parseInt(this.state.slider_val);
+
+      // iterate until you get to present day
+      for (let i = 1; i < num_days - start; i++) {
+        let new_val = start + i;
+        let new_date = new Date(2020, 0, new_val);
+        this.setState({ slider_val: new_val, date: new_date });
+
+        // check to see if it should keep playing after it wakes up
+        await sleep(200);
+        if (!this.state.playing){
+          break;
+        }
+      }
+    } else {
+      // pause slider 
+      this.setState({ playing: false });
+    }
+  }
 
   render() {
     return (
@@ -60,7 +80,7 @@ class WorldMap extends Component {
           </Columns.Column>
           <Columns.Column>
             <Button onClick={this.handlePlay} className="is-danger">
-              <p>Play</p>
+              <p>{this.state.playing ? "Pause" : "Play"}</p>
             </Button>
           </Columns.Column>
         </Columns>
