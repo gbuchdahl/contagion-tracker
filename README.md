@@ -42,6 +42,10 @@ where `<connection_string>` is the connection string associated with our databas
 
 Be sure to **never** commit this file to the repository.
 
+## To build/compile CSS
+
+`npm run css-build` or `npm run css-watch`
+
 ## To format:
 
-`npm run prettier`
+`npm run format`
