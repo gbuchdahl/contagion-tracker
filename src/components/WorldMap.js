@@ -11,25 +11,30 @@ let geoData = require("../data/countries.json");
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 
-const epoch = new Date(2020, 2, 1);
+const epoch = new Date(2020, 2, 1); // Start visualization from March 1st
 
+// number of days between march 1st and present
 const num_days = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 
+// help us make color scheme
 const MAX_DEATHS = 10;
 
+// plug in a number, outputs a color
 const colorScale = scaleLinear()
   .domain([0, MAX_DEATHS])
   .range(["#e5e5e5", "#ff5233"]);
 
-const codes = geoData["objects"]["ne_110m_admin_0_countries"][
-      "geometries"
-    ].map((country) => country["properties"]["ISO_A3"]);
+// 3 digit country codes, taken from the thing that made the map
+const codes = geoData["objects"]["ne_110m_admin_0_countries"]["geometries"].map(
+  (country) => country["properties"]["ISO_A3"]
+);
 
 // make the slider not move instantly
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// function to help communicate with api
 const build_query_string = (code, date) => {
   return (
     "/world/" +
@@ -46,13 +51,16 @@ const build_query_string = (code, date) => {
 class WorldMap extends Component {
   constructor(props) {
     super(props);
-    const gray = Array(177).fill("#e5e5e5")
+    // initial fill is all gray
+    const gray = Array(177).fill("#e5e5e5");
+
     this.state = {
       slider_val: 0,
       date: epoch,
       playing: false,
       fills: gray,
     };
+
     this.handleSlider = this.handleSlider.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
     this.fetchFills = this.fetchFills.bind(this);
@@ -64,8 +72,6 @@ class WorldMap extends Component {
     let newDate = new Date(2020, 2, e.target.value);
     this.setState({ slider_val: e.target.value, date: newDate });
     let promises = await this.fetchFills(this.state.date);
-    // Promise.all(promises).then(data => console.log(data))
-    // console.log(fills);
   };
 
   // handles the play button
@@ -95,13 +101,21 @@ class WorldMap extends Component {
   }
 
   async fetchFills(date) {
-    let res = codes.map(code => fetch(build_query_string(code, date)).then(response => response.json()).then(json => 
-        (json.hasOwnProperty("error")? null : json["new_deaths_per_million"]))
-    )
+    let res = codes.map((code) =>
+      fetch(build_query_string(code, date))
+        .then((response) => response.json())
+        .then((json) =>
+          json.hasOwnProperty("error") ? null : json["new_deaths_per_million"]
+        )
+    );
     let dpm = await Promise.all(res).then((data) => data);
-    let fills = dpm.map(deaths => (deaths === null) ? "#e5e5e5" : colorScale(deaths));
-    console.log(fills)
-    this.setState({fills});
+
+    // get a color depending on how many deaths there are
+    let fills = dpm.map((deaths) =>
+      deaths === null ? "#e5e5e5" : colorScale(deaths)
+    );
+    // set the state to have those colors
+    this.setState({ fills });
   }
 
   render() {
@@ -133,9 +147,14 @@ class WorldMap extends Component {
           <Geographies geography={geoData}>
             {({ geographies }) =>
               geographies.map((geo, index) => {
-                return( <Geography key={geo.rsmKey} geography={geo} fill={this.state.fills[index]} />);
-              }
-              )
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={this.state.fills[index]}
+                  />
+                );
+              })
             }
           </Geographies>
         </ComposableMap>
