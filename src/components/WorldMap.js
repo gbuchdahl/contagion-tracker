@@ -35,7 +35,7 @@ class WorldMap extends Component {
     return (
       <Container>
         <h2 className="is-2 has-text-centered">{this.state.date.toDateString()}</h2>
-        <input className="slider is-fullwidth" step="1" min="0" max={num_days} value={this.state.slider_val} type="range" onChange={this.handleSlider}/>
+        <input className="slider is-danger is-fullwidth" step="1" min="0" max={num_days} value={this.state.slider_val} type="range" onChange={this.handleSlider}/>
         <ComposableMap>
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
