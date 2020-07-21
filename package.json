@@ -18,7 +18,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "css-build": "node-sass --omit-source-map-url src/sass/main.scss src/css/main.css",
+    "css-watch": "npm run css-build -- --watch"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -37,6 +39,8 @@
   },
   "proxy": "http://localhost:5000",
   "devDependencies": {
+    "bulma": "^0.9.0",
+    "node-sass": "^4.14.1",
     "prettier": "2.0.5"
   }
 }
