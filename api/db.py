@@ -1,4 +1,5 @@
 from flask_pymongo import PyMongo
+import utils
 
 def set_db(app):
     global db_
@@ -14,7 +15,10 @@ def get_by_state_and_date(stateAbbrv, date):
                 "date": date
             })
 
-    return res
+    if res:
+        res["_id"] = str(res["_id"])
+        return res
+    return utils.DOCUMENT_NOT_FOUND 
 
 def get_by_country_and_date(countryCode, date):
     res = db_.covid_world.find_one(
@@ -22,4 +26,7 @@ def get_by_country_and_date(countryCode, date):
                 "country_code": countryCode.upper(),
                 "date": date
             })
-    return res
+    if res:
+        res["_id"] = str(res["_id"])
+        return res
+    return utils.DOCUMENT_NOT_FOUND 
