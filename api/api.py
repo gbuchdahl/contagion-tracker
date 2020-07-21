@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask, request, render_template_string, abort
-from flask_pymongo import PyMongo
+import datetime
+import sys
 
 import config
 import utils
@@ -8,7 +9,16 @@ import db
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = config.MONGO_URI
-db.set_db(app)
+
+try:
+    db.set_db(app)
+except RuntimeError as e:
+    print("Failed to set up database") 
+    sys.exit(127)
+
+@app.route("/time")
+def get_time():
+    return {"time": datetime.datetime.now()}
 
 @app.route("/us/<stateAbbrv>")
 def get_by_state(stateAbbrv, methods=["GET"]):

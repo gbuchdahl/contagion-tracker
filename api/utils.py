@@ -9,5 +9,4 @@ def get_date_from_args():
         date = datetime.date.today()
     else:
         date = datetime.datetime.strptime(date, "%d_%m_%Y")
-        date.replace(minute=0, hour=0)
-    return date.replace(tzinfo=datetime.timezone.utc)
+    return date
