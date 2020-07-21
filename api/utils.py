@@ -1,6 +1,7 @@
 import datetime
 from flask import request
 
+DOCUMENT_NOT_FOUND = {"error": "Document not found"}
 
 def get_date_from_args():
     date = request.args.get("date", default=None)
