@@ -17,7 +17,7 @@ const epoch = new Date(2020, 2, 1); // Start visualization from March 1st
 const num_days = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 
 // help us make color scheme
-const MAX_DEATHS = 10;
+const MAX_DEATHS = 3;
 
 // plug in a number, outputs a color
 const colorScale = scaleLinear()
