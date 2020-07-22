@@ -5,6 +5,7 @@ import "./css/main.css";
 import Banner from "./components/Banner";
 import USMap from "./components/USMap";
 import WorldMap from "./components/WorldMap";
+import Footer from "./components/Footer";
 
 import { Container, Tabs, Columns } from "react-bulma-components";
 
@@ -37,6 +38,7 @@ function App() {
           </Columns.Column>
         </Columns>
       </Container>
+      <Footer />
     </div>
   );
 }
