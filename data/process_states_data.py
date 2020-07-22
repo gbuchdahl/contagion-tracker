@@ -34,13 +34,10 @@ with open("covid-data-states.csv", "r") as datafile:
             date = elements[0]
             covid_doc = {"date" : datetime(int(date[:4]), int(date[4:6]), int(date[6:]))}
 
-            print(len(attributes))
-            print(elements)
-
             for i, attribute in enumerate(attributes[1:]): 
                 value = elements[i + 1]
                 if len(value) == 0: continue
-                if value.isnumeric(): value = int(value)
+                if attribute != "state_code" and attribute != "data_quality_grade": value = int(value)
 
                 covid_doc[attribute] = value
 
