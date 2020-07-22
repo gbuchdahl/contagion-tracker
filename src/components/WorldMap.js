@@ -84,7 +84,7 @@ class WorldMap extends Component {
   render() {
     return (
       <Container>
-        <h2 className="is-2 has-text-centered">
+        <h2 className="is-2 has-text-weight-bold has-text-centered">
           {this.state.date.toDateString().slice(4)}
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />

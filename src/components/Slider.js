@@ -62,7 +62,7 @@ class Slider extends Component {
   render() {
     return (
       <Columns className="is-vcentered">
-        <Columns.Column className="is-four-fifths">
+        <Columns.Column className="is-one-half is-offset-one-quarter">
           <input
             className="slider is-danger is-fullwidth"
             step="1"
