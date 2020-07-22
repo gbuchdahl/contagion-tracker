@@ -75,6 +75,7 @@ class WorldMap extends Component {
     this.handleSlider = this.handleSlider.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
     this.fetchFills = this.fetchFills.bind(this);
+    this.fetchFills(epoch);
   }
 
   // function to update the date by moving the slider
@@ -99,6 +100,8 @@ class WorldMap extends Component {
         let new_date = new Date(2020, 2, new_val);
         this.setState({ slider_val: new_val, date: new_date });
 
+        this.fetchFills(new_date);
+
         // check to see if it should keep playing after it wakes up
         await sleep(200);
         if (!this.state.playing) {
@@ -112,24 +115,21 @@ class WorldMap extends Component {
   }
 
   async fetchFills(date) {
-    // let res = codes.map((code) =>
-    //   fetch(build_query_string(code, date))
-    //     .then((response) => response.json())
-    //     .then((json) =>
-    //       json.hasOwnProperty("error") ? null : json["new_deaths_per_million"]
-    //     )
-    // );
-    // let dpm = await Promise.all(res).then((data) => data);
-
-    // // get a color depending on how many deaths there are
-    // let fills = dpm.map((deaths) =>
-    //   deaths === null ? "#e5e5e5" : colorScale(deaths)
-    // );
-    // // set the state to have those colors
-    // this.setState({ fills });
-
-    let res = await fetch(query_by_date(date)).then(response => response.json())
-    console.log(res)
+    let res = await fetch(query_by_date(date)).then(response => response.json());
+    const DPM_docs = res.val;
+    let fills = codes.map((code) => {
+      let doc = DPM_docs.find((country) => country["country_code"] === code);
+      let deaths = null;
+      if (doc !== undefined) {
+        deaths = doc.new_deaths_per_million;
+      }
+      if (deaths && deaths > MAX_DEATHS) {
+        return "#FF0000";
+      }
+      return deaths === null ? "#e5e5e5" : colorScale(deaths);
+    }
+    )
+    this.setState({fills});
   }
 
   render() {
