@@ -17,7 +17,7 @@ const epoch = new Date(2020, 2, 1); // Start visualization from March 1st
 const NUM_DAYS = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 
 // help us make color scheme
-const MAX_DEATHS = 3;
+const MAX_DEATHS = 5;
 
 // plug in a number, outputs a color
 const colorScale = scaleLinear()
@@ -97,6 +97,7 @@ class WorldMap extends Component {
                     key={geo.rsmKey}
                     geography={geo}
                     fill={this.state.fills[index]}
+                    stroke="#FFF"
                   />
                 );
               })
