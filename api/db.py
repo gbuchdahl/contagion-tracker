@@ -11,6 +11,75 @@ def set_db(app):
     if db_ is None:
         raise RuntimeError("db_ not created")
 
+
+def get_us_dpm_by_date(date):
+    dateMatch  = {
+                    '$match': {
+                        'date': date,
+                        'new_deaths': {'$type': 'int'}
+                        }
+                    }
+    lookupStage  = {
+                        '$lookup': {
+                            'from': 'us_states', 
+                            'localField': 'state_code', 
+                            'foreignField': 'state_code', 
+                            'as': 'data'
+                        }
+                    }
+    dataExistsMatch = {
+            '$match': {
+                '$and': [
+                    {'data': {'$size': 1}},
+                    {'data.0.population': {'$exists': True}}
+                    ]
+                }
+            }
+    
+    addDataStage = {
+                        '$addFields': {
+                            'data': {
+                                '$arrayElemAt': [
+                                    '$data', 0
+                                ]
+                            }
+                        }
+                    }
+
+    projectionStage = {
+                        '$project': {
+                            'new_deaths_per_million': {
+                                '$round': [
+                                    {'$multiply': [
+                                        {
+                                            '$divide': [
+                                                '$new_deaths', '$data.population'
+                                            ]
+                                        }, 1000000
+                                    ]}
+                                , 3]
+                            },
+                            'state_code':1,
+                            'date':1,
+                            '_id': 0
+                        }
+                    }
+    res = db_.covid_us.aggregate(
+            [
+                dateMatch,
+                {"$sort": {"state_code": 1}},
+                lookupStage,
+                dataExistsMatch,
+                addDataStage,
+                projectionStage
+            ])
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "val": resList} 
+        return rv
+    return utils.DOCUMENT_NOT_FOUND
+
+
 # TODO: fix error with aggregation and StopIteration
 def get_dpm_by_state_and_date(stateCode, date):
     """
@@ -21,20 +90,34 @@ def get_dpm_by_state_and_date(stateCode, date):
            if date is None, return most recent document
            with 'state_code' field matching stateCode 
     """
-    if not (date is None):
-        res = db_.covid_us.aggregate(
-                [
-                    {'$match': {'state_code': stateCode.upper(), 'date': date}},
-                    {'$limit': 1}, 
-                    {
+    dateMatch  = {
+                    '$match': {
+                        'state_code': stateCode.upper(),
+                        'date': date,
+                        }
+                    }
+    noDateMatch = {
+            '$match': {
+                'state_code': stateCode.upper(),
+                }
+            },
+    lookupStage  = {
                         '$lookup': {
                             'from': 'us_states', 
                             'localField': 'state_code', 
                             'foreignField': 'state_code', 
                             'as': 'data'
                         }
-                    },
-                    {
+                    }
+    dataExistsMatch = {
+            '$match': {
+                '$and': [
+                    {'data': {'$size': 1}},
+                    {'data.0.population': {'$exists': True}}
+                    ]
+                }
+            }
+    addDataStage = {
                         '$addFields': {
                             'data': {
                                 '$arrayElemAt': [
@@ -42,61 +125,45 @@ def get_dpm_by_state_and_date(stateCode, date):
                                 ]
                             }
                         }
-                    }, {
+                    }
+    projectionStage = {
                         '$project': {
                             'new_deaths_per_million': {
-                                '$multiply': [
-                                    {
-                                        '$divide': [
-                                            '$new_deaths', '$data.population'
-                                        ]
-                                    }, 1000000
-                                ]
+                                '$round': [
+                                    {'$multiply': [
+                                        {
+                                            '$divide': [
+                                                '$new_deaths', '$data.population'
+                                            ]
+                                        }, 1000000
+                                    ]}
+                                , 3]
                             },
                             'state_code':1,
                             'date':1,
                             '_id': 0
                         }
                     }
+    if date:
+        res = db_.covid_us.aggregate(
+                [
+                    dateMatch,
+                    {'$limit': 1}, 
+                    lookupStage,
+                    dataExistsMatch,
+                    addDataStage,
+                    projectionStage
                 ])
     else: # return most recent datapoint if date is None
         res = db_.covid_us.aggregate(
                 [
-                    {'$match': {'state_code': stateCode.upper()}},
+                    noDateMatch,
                     {'$sort': {'date': -1}},
                     {'$limit': 1}, 
-                    {
-                        '$lookup': {
-                            'from': 'us_states', 
-                            'localField': 'state_code', 
-                            'foreignField': 'state_code', 
-                            'as': 'data'
-                        }
-                    },
-                    {
-                        '$addFields': {
-                            'data': {
-                                '$arrayElemAt': [
-                                    '$data', 0
-                                ]
-                            }
-                        }
-                    }, {
-                        '$project': {
-                            'new_deaths_per_million': {
-                                '$multiply': [
-                                    {
-                                        '$divide': [
-                                            '$new_deaths', '$data.population'
-                                        ]
-                                    }, 1000000
-                                ]
-                            },
-                            'state_code':1,
-                            'date':1,
-                            '_id':0
-                        }
-                    }
+                    lookupStage,
+                    dataExistsMatch,
+                    addDataStage,
+                    projectionStage
                 ])
     if res:
         for r in res:
@@ -176,32 +243,30 @@ def get_dpm_by_country_and_date(countryCode, date):
            if date is None, return most recent document
            with 'country_code' field matching countryCode
     """
-    if not (date is None):
+    dateMatchStage = {'$match': {'country_code': countryCode.upper(), 'date': date}}
+    noDateMatchStage = {'$match': {'country_code': countryCode.upper()}}
+    projectionStage = {
+            '$project': {
+                    'new_deaths_per_million': 1,
+                    'country_code':1,
+                    'date':1,
+                    '_id':0
+                    }
+                }
+    if date:
         res = db_.covid_world.aggregate(
                 [
-                    {'$match': {'country_code': countryCode.upper(), 'date': date}},
+                    dateMatchStage,
                     {'$limit': 1},
-                    {'$project': {
-                        'new_deaths_per_million': 1,
-                        'country_code':1,
-                        'date':1,
-                        '_id':0
-                        }
-                    }
+                    projectionStage
                 ])
     else: # return most recent datapoint if date is None
         res = db_.covid_world.aggregate(
                 [
-                    {'$match': {'country_code': countryCode.upper()}},
+                    noDateMatchStage,
                     {'$sort': {'date': -1}},
                     {'$limit': 1}, 
-                    {'$project': {
-                        'new_deaths_per_million': 1,
-                        'country_code':1,
-                        'date':1,
-                        '_id':0
-                        }
-                    }
+                    projectionStage
                 ])
 
     if res:
@@ -210,3 +275,23 @@ def get_dpm_by_country_and_date(countryCode, date):
             break
         return res
     return utils.DOCUMENT_NOT_FOUND 
+
+
+def get_world_dpm_by_date(date):
+    res = db_.covid_world.aggregate(
+            [
+                {"$match": {"date":date}},
+                {"$sort": {"country_code": 1}},
+                {"$project": {
+                    "new_deaths_per_million": 1,
+                    "country_code": 1,
+                    "date": 1,
+                    "_id": 0
+                    }
+                }
+            ])
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "val": resList}
+        return rv
+    return utils.DOCUMENT_NOT_FOUND
