@@ -119,6 +119,25 @@ def get_dpm_by_country(countryCode):
                 utils.INVALID_COUNTRY_STR.format(countryCode)), 404
     abort(405)
 
+
+@app.route("/us-dpm-by-date", methods=["GET"])
+def get_us_dpm_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        res = db.get_us_dpm_by_date(date)
+        return res
+    abort(405)
+
+
+@app.route("/world-dpm-by-date", methods=["GET"])
+def get_world_dpm_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        res = db.get_world_dpm_by_date(date)
+        return res
+    abort(405)
+
+
 @app.errorhandler(405)
 def wrong_request(error):
     return render_template_string(
