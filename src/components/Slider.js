@@ -11,7 +11,7 @@ class Slider extends Component {
 
     this.state = {
       playing: false,
-      val: 0
+      val: 0,
     };
 
     this.handleSlider = this.handleSlider.bind(this);
@@ -20,36 +20,39 @@ class Slider extends Component {
 
   handleSlider = async (e) => {
     this.setState({ playing: false });
-    this.props.update(e.target.value)
-    this.setState({val: e.target.value})
-   };
+    this.props.update(e.target.value);
+    this.setState({ val: e.target.value });
+  };
 
   async handlePlay() {
     let playing = this.state.playing;
     if (playing) {
-      console.log("Playing")
-    }
-    else {
-      console.log("Not playing :)")
+      console.log("Playing");
+    } else {
+      console.log("Not playing :)");
     }
     // if it was paused before
     if (!playing) {
       this.setState({ playing: true });
-      if (this.state.playing) {console.log("YEET");} else {console.log("FUCK");}
+      if (this.state.playing) {
+        console.log("YEET");
+      } else {
+        console.log("FUCK");
+      }
       let start = parseInt(this.state.val);
 
       // iterate until you get to present day
       for (let i = 1; i < this.props.num_days - start; i++) {
         let new_val = start + i;
         this.props.update(new_val);
-        this.setState({val: new_val})
+        this.setState({ val: new_val });
         // check to see if it should keep playing after it wakes up
         await sleep(200);
         if (!this.state.playing) {
           break;
         }
       }
-      this.setState({playing: false});
+      this.setState({ playing: false });
     } else {
       // pause slider
       this.setState({ playing: false });
@@ -57,27 +60,26 @@ class Slider extends Component {
   }
 
   render() {
-    return(
+    return (
       <Columns className="is-vcentered">
-      <Columns.Column className="is-four-fifths">
-        <input
-          className="slider is-danger is-fullwidth"
-          step="1"
-          min="0"
-          max={this.props.num_days}
-          value={this.state.val}
-          type="range"
-          onChange={this.handleSlider}
-        />
-      </Columns.Column>
-      <Columns.Column>
-        <Button onClick={this.handlePlay} className="is-danger">
-          <p>{this.state.playing ? "Pause" : "Play"}</p>
-        </Button>
-      </Columns.Column>
-    </Columns>
-    )
-
+        <Columns.Column className="is-four-fifths">
+          <input
+            className="slider is-danger is-fullwidth"
+            step="1"
+            min="0"
+            max={this.props.num_days}
+            value={this.state.val}
+            type="range"
+            onChange={this.handleSlider}
+          />
+        </Columns.Column>
+        <Columns.Column>
+          <Button onClick={this.handlePlay} className="is-danger">
+            <p>{this.state.playing ? "Pause" : "Play"}</p>
+          </Button>
+        </Columns.Column>
+      </Columns>
+    );
   }
 }
 

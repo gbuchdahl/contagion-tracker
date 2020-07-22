@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import { Columns, Button } from "react-bulma-components";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Container } from "react-bulma-components";
 import { scaleLinear } from "d3-scale";
-import Slider  from './Slider';
+import Slider from "./Slider";
 
 // import '../data/countries.json'
 
 let geoData = require("../data/countries.json");
 
-const geoUrl =
-  "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+// const geoUrl =
+//   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 
 const epoch = new Date(2020, 2, 1); // Start visualization from March 1st
 
@@ -58,10 +57,10 @@ class WorldMap extends Component {
   }
 
   updateVal = async (val) => {
-    let newDate = new Date(2020,2,val);
-    this.setState({date: newDate})
+    let newDate = new Date(2020, 2, val);
+    this.setState({ date: newDate });
     this.fetchFills(this.state.date);
-  }
+  };
 
   async fetchFills(date) {
     let res = await fetch(query_by_date(date)).then((response) =>
@@ -88,7 +87,7 @@ class WorldMap extends Component {
         <h2 className="is-2 has-text-centered">
           {this.state.date.toDateString().slice(4)}
         </h2>
-        <Slider num_days={NUM_DAYS} update={this.updateVal}/>
+        <Slider num_days={NUM_DAYS} update={this.updateVal} />
         <ComposableMap>
           <Geographies geography={geoData}>
             {({ geographies }) =>
