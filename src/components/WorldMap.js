@@ -48,6 +48,17 @@ const build_query_string = (code, date) => {
   );
 };
 
+const query_by_date = (date) => {
+  return (
+    "/world-dpm-by-date?date=" +
+    date.getDate() +
+    "_" +
+    (date.getMonth() + 1) +
+    "_" +
+    (date.getYear() + 1900)
+  );
+};
+
 class WorldMap extends Component {
   constructor(props) {
     super(props);
@@ -101,21 +112,24 @@ class WorldMap extends Component {
   }
 
   async fetchFills(date) {
-    let res = codes.map((code) =>
-      fetch(build_query_string(code, date))
-        .then((response) => response.json())
-        .then((json) =>
-          json.hasOwnProperty("error") ? null : json["new_deaths_per_million"]
-        )
-    );
-    let dpm = await Promise.all(res).then((data) => data);
+    // let res = codes.map((code) =>
+    //   fetch(build_query_string(code, date))
+    //     .then((response) => response.json())
+    //     .then((json) =>
+    //       json.hasOwnProperty("error") ? null : json["new_deaths_per_million"]
+    //     )
+    // );
+    // let dpm = await Promise.all(res).then((data) => data);
 
-    // get a color depending on how many deaths there are
-    let fills = dpm.map((deaths) =>
-      deaths === null ? "#e5e5e5" : colorScale(deaths)
-    );
-    // set the state to have those colors
-    this.setState({ fills });
+    // // get a color depending on how many deaths there are
+    // let fills = dpm.map((deaths) =>
+    //   deaths === null ? "#e5e5e5" : colorScale(deaths)
+    // );
+    // // set the state to have those colors
+    // this.setState({ fills });
+
+    let res = await fetch(query_by_date(date)).then(response => response.json())
+    console.log(res)
   }
 
   render() {
