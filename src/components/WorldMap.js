@@ -3,6 +3,7 @@ import { Columns, Button } from "react-bulma-components";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Container } from "react-bulma-components";
 import { scaleLinear } from "d3-scale";
+import Slider  from './Slider';
 
 // import '../data/countries.json'
 
@@ -14,7 +15,7 @@ const geoUrl =
 const epoch = new Date(2020, 2, 1); // Start visualization from March 1st
 
 // number of days between march 1st and present
-const num_days = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
+const NUM_DAYS = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 
 // help us make color scheme
 const MAX_DEATHS = 3;
@@ -29,25 +30,7 @@ const codes = geoData["objects"]["ne_110m_admin_0_countries"]["geometries"].map(
   (country) => country["properties"]["ISO_A3"]
 );
 
-// make the slider not move instantly
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// function to help communicate with api
-const build_query_string = (code, date) => {
-  return (
-    "/world/" +
-    code +
-    "?date=" +
-    date.getDate() +
-    "_" +
-    (date.getMonth() + 1) +
-    "_" +
-    (date.getYear() + 1900)
-  );
-};
-
+// QUERY API for DPM
 const query_by_date = (date) => {
   return (
     "/world-dpm-by-date?date=" +
@@ -66,70 +49,37 @@ class WorldMap extends Component {
     const gray = Array(177).fill("#e5e5e5");
 
     this.state = {
-      slider_val: 0,
       date: epoch,
-      playing: false,
       fills: gray,
     };
 
-    this.handleSlider = this.handleSlider.bind(this);
-    this.handlePlay = this.handlePlay.bind(this);
     this.fetchFills = this.fetchFills.bind(this);
     this.fetchFills(epoch);
   }
 
-  // function to update the date by moving the slider
-  handleSlider = async (e) => {
-    this.setState({ playing: false });
-    let newDate = new Date(2020, 2, e.target.value);
-    this.setState({ slider_val: e.target.value, date: newDate });
-    let promises = await this.fetchFills(this.state.date);
-  };
-
-  // handles the play button
-  async handlePlay() {
-    let playing = this.state.playing;
-    // if it was paused before
-    if (!playing) {
-      this.setState({ playing: true });
-      let start = parseInt(this.state.slider_val);
-
-      // iterate until you get to present day
-      for (let i = 1; i < num_days - start; i++) {
-        let new_val = start + i;
-        let new_date = new Date(2020, 2, new_val);
-        this.setState({ slider_val: new_val, date: new_date });
-
-        this.fetchFills(new_date);
-
-        // check to see if it should keep playing after it wakes up
-        await sleep(200);
-        if (!this.state.playing) {
-          break;
-        }
-      }
-    } else {
-      // pause slider
-      this.setState({ playing: false });
-    }
+  updateVal = async (val) => {
+    let newDate = new Date(2020,2,val);
+    this.setState({date: newDate})
+    this.fetchFills(this.state.date);
   }
 
   async fetchFills(date) {
-    let res = await fetch(query_by_date(date)).then(response => response.json());
+    let res = await fetch(query_by_date(date)).then((response) =>
+      response.json()
+    );
     const DPM_docs = res.val;
     let fills = codes.map((code) => {
       let doc = DPM_docs.find((country) => country["country_code"] === code);
-      let deaths = null;
+      let deaths = undefined;
       if (doc !== undefined) {
         deaths = doc.new_deaths_per_million;
       }
       if (deaths && deaths > MAX_DEATHS) {
         return "#FF0000";
       }
-      return deaths === null ? "#e5e5e5" : colorScale(deaths);
-    }
-    )
-    this.setState({fills});
+      return deaths === undefined ? "#e5e5e5" : colorScale(deaths);
+    });
+    this.setState({ fills });
   }
 
   render() {
@@ -138,25 +88,7 @@ class WorldMap extends Component {
         <h2 className="is-2 has-text-centered">
           {this.state.date.toDateString().slice(4)}
         </h2>
-        <Columns className="is-vcentered">
-          <Columns.Column className="is-four-fifths">
-            <input
-              className="slider is-danger is-fullwidth"
-              step="1"
-              min="0"
-              max={num_days}
-              value={this.state.slider_val}
-              type="range"
-              onChange={this.handleSlider}
-            />
-          </Columns.Column>
-          <Columns.Column>
-            <Button onClick={this.handlePlay} className="is-danger">
-              <p>{this.state.playing ? "Pause" : "Play"}</p>
-            </Button>
-          </Columns.Column>
-        </Columns>
-
+        <Slider num_days={NUM_DAYS} update={this.updateVal}/>
         <ComposableMap>
           <Geographies geography={geoData}>
             {({ geographies }) =>

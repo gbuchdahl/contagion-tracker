@@ -26,3 +26,5 @@ venv
 __pycache__
 
 data/
+*.html
+*.css
