@@ -15,8 +15,7 @@ const MyFooter = () => {
           <a href="https://ourworldindata.org/coronavirus/">
             Our World in Data
           </a>
-          . Twitter trends were scraped through calls to the Twitter API via the
-          client{" "}
+          . Twitter trends were scraped through calls to the Twitter API via{" "}
           <a href="https://pypi.org/project/GetOldTweets3/">GetOldTweets3</a>.
           You can view the whole project (including source code and more
           detailed documentation){" "}

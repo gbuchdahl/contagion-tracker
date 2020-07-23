@@ -25,7 +25,7 @@ const CountryModalCard = (props) => {
       <div className="modal-card">
         <header className="modal-card-head">
           <p className="modal-card-title">
-            <span className="has-text-weight-bold">{props.location}</span> |{" "}
+            <span className="has-text-weight-bold">{props.location} COVID Factsheet {" "}</span> |{" "}
             {date.toDateString().slice(4)}
           </p>
         </header>
