@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-import { Container } from "react-bulma-components";
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
+import { Container} from "react-bulma-components";
 import { scaleLinear } from "d3-scale";
 import Slider from "./Slider";
+import LinearGradient from './LinearGradient.js';
 
 // import '../data/countries.json'
 
@@ -23,6 +24,15 @@ const MAX_DEATHS = 3;
 const colorScale = scaleLinear()
   .domain([0, MAX_DEATHS])
   .range(["#e5e5e5", "#ff5233"]);
+
+// Gradient Parameters
+const gradientData = {
+  title: "Deaths per Million",
+  fromColor: "#e5e5e5",
+  toColor: "#ff5233",
+  min: 0,
+  max: `${MAX_DEATHS}+`
+};
 
 // 3 digit country codes, taken from the thing that made the map
 const codes = geoData["objects"]["ne_110m_admin_0_countries"]["geometries"].map(
@@ -88,21 +98,24 @@ class WorldMap extends Component {
           {this.state.date.toDateString().slice(4)}
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
-        <ComposableMap>
-          <Geographies geography={geoData}>
-            {({ geographies }) =>
-              geographies.map((geo, index) => {
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={this.state.fills[index]}
-                  />
-                );
-              })
-            }
-          </Geographies>
-        </ComposableMap>
+          <ComposableMap>
+            <ZoomableGroup zoom={1}>
+              <Geographies geography={geoData}>
+                {({ geographies }) =>
+                  geographies.map((geo, index) => {
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={this.state.fills[index]}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+          <LinearGradient data={gradientData}></LinearGradient>
       </Container>
     );
   }

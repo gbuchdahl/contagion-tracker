@@ -10839,6 +10839,14 @@ a.has-text-danger-dark:focus {
   padding: 3rem 1.5rem 6rem;
 }
 
+.fill {
+  padding-left: 210px
+}
+
+.display-flex-centered {
+  text-align: center
+}
+
 input[type="range"].slider {
   appearance: none;
   margin: 1rem 0;
