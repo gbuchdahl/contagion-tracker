@@ -72,9 +72,20 @@ class Slider extends Component {
             <p>{this.state.playing ? "Pause" : "Play"}</p>
           </Button>
           {this.state.playing && (
-            <div className="field has-addons mt-2">
+            <div className="field has-addons mt-2 is-fullwidth">
               <div className="columns is-fullwidth is-gapless">
+                <p className="control column  mx-0">
+                  <button
+                    onClick={() => this.setState({ speed: 800 })}
+                    className={
+                      this.state.speed === 800 ? "is-active button" : "button"
+                    }
+                  >
+                    <span className="has-text-weight-bold">x1</span>
+                  </button>
+                </p>
                 <p className="control column mx-0">
+                  
                   <button
                     onClick={() => this.setState({ speed: 400 })}
                     className={
@@ -102,16 +113,6 @@ class Slider extends Component {
                     }
                   >
                     <span className="has-text-weight-bold">x8</span>
-                  </button>
-                </p>
-                <p className="control column  mx-0">
-                  <button
-                    onClick={() => this.setState({ speed: 800 })}
-                    className={
-                      this.state.speed === 800 ? "is-active button" : "button"
-                    }
-                  >
-                    <span className="has-text-weight-bold">x1</span>
                   </button>
                 </p>
               </div>
