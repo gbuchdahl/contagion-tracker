@@ -87,8 +87,11 @@ const CountryModalCard = (props) => {
               </ul>
             </div>
           </div>
-        </section>
+          <h3 className="has-text-weight-semibold is-size-4 mt-0 mb-2">
+            Viral Trends:
+          </h3>
         <Cloud />
+        </section>
         <section className="modal-card-foot">
           <p className="button is-warning" onClick={props.handle}>
             Close
