@@ -38,38 +38,42 @@ const CountryModalCard = (props) => {
             <div className="column is-4">
               <ul>
                 <li>
-                <span class="icon">
-                  <i class="fas fa-hospital"></i>
-                </span><strong> New Cases:</strong> {props.new_cases.toLocaleString("en")}
+                  <span class="icon">
+                    <i class="fas fa-hospital"></i>
+                  </span>
+                  <strong> New Cases:</strong>{" "}
+                  {props.new_cases.toLocaleString("en")}
                 </li>
                 <li>
-                <span class="icon">
-                  <i class="fas fa-hospital-alt"></i>
-                </span><strong> Total Cases:</strong>{" "}
+                  <span class="icon">
+                    <i class="fas fa-hospital-alt"></i>
+                  </span>
+                  <strong> Total Cases:</strong>{" "}
                   {props.total_cases.toLocaleString("en")}
                 </li>
                 <li>
-                <span class="icon">
-                  <i class="fas fa-book-dead"></i>
-                </span><strong> New Deaths:</strong>{" "}
+                  <span class="icon">
+                    <i class="fas fa-book-dead"></i>
+                  </span>
+                  <strong> New Deaths:</strong>{" "}
                   {props.new_deaths.toLocaleString("en")}
                 </li>
               </ul>
             </div>
             <div className="column">
               <ul>
-                
-                <li>
-                <span class="icon">
-                  <i class="fas fa-virus"></i>
-                </span><strong> New Cases Per Million:</strong>{" "}
-                  {props.new_cases_per_million.toLocaleString("en")}
-                </li>
-                
                 <li>
                   <span class="icon">
-                  <i class="fas fa-viruses"></i>
-                </span>
+                    <i class="fas fa-virus"></i>
+                  </span>
+                  <strong> New Cases Per Million:</strong>{" "}
+                  {props.new_cases_per_million.toLocaleString("en")}
+                </li>
+
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-viruses"></i>
+                  </span>
                   <strong> Total Cases Per Million:</strong>{" "}
                   {props.total_cases_per_million.toLocaleString("en")}
                 </li>

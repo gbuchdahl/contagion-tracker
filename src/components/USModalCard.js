@@ -39,26 +39,51 @@ const USModalCard = (props) => {
           <h3 className="has-text-weight-semibold is-size-4 mt-0 mb-2">
             COVID Factsheet
           </h3>
-          <ul>
-            <li>
-              <strong>New Tests:</strong> {props.new_tests.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Cases:</strong> {props.new_cases.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>Total Cases:</strong>{" "}
-              {props.total_cases.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Hospitalized:</strong>{" "}
-              {props.new_hospitalized.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Deaths:</strong>{" "}
-              {props.new_deaths.toLocaleString("en")}
-            </li>
-          </ul>
+          <div className="columns">
+            <div className="column is-4">
+              <ul>
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-vials"></i>
+                  </span>
+                  <strong> New Tests:</strong>{" "}
+                  {props.new_cases.toLocaleString("en")}
+                </li>
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-hospital"></i>
+                  </span>
+                  <strong> New Cases:</strong>{" "}
+                  {props.new_cases.toLocaleString("en")}
+                </li>
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-hospital-alt"></i>
+                  </span>
+                  <strong> Total Cases:</strong>{" "}
+                  {props.total_cases.toLocaleString("en")}
+                </li>
+              </ul>
+            </div>
+            <div className="column">
+              <ul>
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-hospital-user"></i>
+                  </span>
+                  <strong>New Hospitalized:</strong>{" "}
+                  {props.new_hospitalized.toLocaleString("en")}
+                </li>
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-book-dead"></i>
+                  </span>
+                  <strong> New Deaths:</strong>{" "}
+                  {props.new_deaths.toLocaleString("en")}
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
         <Cloud />
         <section className="modal-card-foot">
