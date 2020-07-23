@@ -167,6 +167,7 @@ class WorldMap extends Component {
             </Geographies>
           </ZoomableGroup>
         </ComposableMap>
+        <LinearGradient data={gradientData}></LinearGradient>
       </Container>
     );
   }
