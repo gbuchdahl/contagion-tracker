@@ -120,11 +120,66 @@ def get_us_dpm_by_date():
         return res
     raise exceptions.InvalidRequestException(request.method)
 
+@app.route("/us-cpm-by-date", methods=["GET"])
+def get_us_cpm_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        res = db.get_us_cpm_by_date(date)
+        return res
+    raise exceptions.InvalidRequestException(request.method)
+
 @app.route("/world-dpm-by-date", methods=["GET"])
 def get_world_dpm_by_date():
     if request.method == "GET":
         date = utils.get_date_from_args()
         res = db.get_world_dpm_by_date(date)
+        return res
+    raise exceptions.InvalidRequestException(request.method)
+
+@app.route("/world-cpm-by-date", methods=["GET"])
+def get_world_cpm_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        res = db.get_world_cpm_by_date(date)
+        return res
+    raise exceptions.InvalidRequestException(request.method)
+
+@app.route("/world-dpm-avg-by-date", methods=["GET"])
+def get_world_dpm_avg_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        window = utils.get_window_from_args()
+        res = db.get_world_dpm_avg_by_date(date, window)
+        return res
+    raise exceptions.InvalidRequestException(request.method)
+
+
+@app.route("/us-dpm-avg-by-date", methods=["GET"])
+def get_us_dpm_avg_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        window = utils.get_window_from_args()
+        res = db.get_us_dpm_avg_by_date(date, window)
+        return res
+    raise exceptions.InvalidRequestException(request.method)
+
+
+@app.route("/world-cpm-avg-by-date", methods=["GET"])
+def get_world_cpm_avg_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        window = utils.get_window_from_args()
+        res = db.get_world_cpm_avg_by_date(date, window)
+        return res
+    raise exceptions.InvalidRequestException(request.method)
+
+
+@app.route("/us-cpm-avg-by-date", methods=["GET"])
+def get_us_cpm_avg_by_date():
+    if request.method == "GET":
+        date = utils.get_date_from_args()
+        window = utils.get_window_from_args()
+        res = db.get_us_cpm_avg_by_date(date, window)
         return res
     raise exceptions.InvalidRequestException(request.method)
 

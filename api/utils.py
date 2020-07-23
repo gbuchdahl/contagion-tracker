@@ -3,7 +3,7 @@ from flask import request
 import country_codes
 import state_codes
 
-from exceptions import InvalidDateException 
+from exceptions import InvalidDateException, InvalidWindowException
 
 def get_date_from_args():
     """
@@ -17,6 +17,20 @@ def get_date_from_args():
         except ValueError:
             raise InvalidDateException()
     return date
+
+def get_window_from_args():
+    window = request.args.get("window")
+    if window is None:
+        raise InvalidWindowException(window)
+    
+    try:
+        window = int(window)
+    except ValueError:
+        raise InvalidWindowException(window)
+
+    if window < 0:
+        raise InvalidWindowException(window)
+    return window
 
 def validate_country_code(countryCode):
     """
