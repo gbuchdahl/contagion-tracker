@@ -88,7 +88,7 @@ class USMap extends Component {
       data: undefined,
       state: undefined,
       modal: false,
-      stat: "deaths"
+      stat: "cases"
     };
 
     this.fetchFills = this.fetchFills.bind(this);
