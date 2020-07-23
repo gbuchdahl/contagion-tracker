@@ -39,7 +39,7 @@ function App() {
         <Columns>
           <Columns.Column />
           <Columns.Column className="is-four-fifths">
-            {location === "USA" ? <USMap /> : <WorldMap />}
+            {location === "USA" ? <USMap /> : <WorldMap switch={()=>setLocation("USA")}/>}
           </Columns.Column>
           <Columns.Column />
         </Columns>

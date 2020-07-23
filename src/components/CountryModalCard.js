@@ -53,6 +53,10 @@ const CountryModalCard = (props) => {
             </li>
           </ul>
         </section>
+        <section className="modal-card-foot">
+            <p className="button is-warning" onClick={props.handle}>Close</p>
+            {(props.location === "United States") && <p className="button is-success" onClick={props.handleUSA}>View US Data</p>}
+        </section>
       </div>
     );
   } else {

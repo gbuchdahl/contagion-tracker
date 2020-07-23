@@ -144,6 +144,11 @@ class WorldMap extends Component {
     this.setState({ data: newData });
   };
 
+  handleUSA = () => {
+    this.setState({modal: false});
+    this.props.switch();
+  }
+
   render() {
     return (
       <Container>
@@ -156,7 +161,7 @@ class WorldMap extends Component {
           className={this.state.modal === true ? "modal is-active" : "modal"}
         >
           <div onClick={this.toggleModal} className="modal-background"></div>
-          <CountryModalCard {...this.state.data} />
+          <CountryModalCard handleUSA={this.handleUSA} handle={() => this.setState({modal: false})} {...this.state.data} />
           <button
             onClick={this.toggleModal}
             className="modal-close is-large"
