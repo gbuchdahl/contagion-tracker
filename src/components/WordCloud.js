@@ -1,19 +1,26 @@
-import WordCloud from "./wordcloud2.js";
+import WordCloud from "./wordcloud2";
+import React from "react";
 
-const freqs = [
-  ["foo", 12],
-  ["bar", 6],
-];
+class Cloud extends React.Component {
+    componentDidMount() {
+        this.updateCanvas();
+    }
+    updateCanvas() {
+        const freqs = [['foo', 20], ['bar', 15]];
 
-// Gradient Parameters
-const options = {
-  list: freqs,
-  color: "#000",
-  fontFamily: "sans-serif",
-};
+        const options = {
+        list: freqs,
+        color: '#000',
+        fontFamily: 'sans-serif',
+        };
 
-const Cloud = () => {
-  return WordCloud(document.getElementById("my_canvas"), options);
-};
+        WordCloud(this.refs.canvas, options);
+    }
+    render() {
+        return (
+            <canvas ref="canvas" width={300} height={300}/>
+        );
+    }
+}
 
 export default Cloud;

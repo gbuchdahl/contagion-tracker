@@ -1,4 +1,5 @@
 import React from "react";
+import Cloud from "./WordCloud.js";
 
 const USModalCard = (props) => {
   let date = new Date(props.date);
@@ -59,6 +60,7 @@ const USModalCard = (props) => {
             </li>
           </ul>
         </section>
+        <Cloud />
         <section className="modal-card-foot">
           <p className="button is-warning" onClick={props.handle}>
             Close
