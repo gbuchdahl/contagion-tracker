@@ -2,7 +2,7 @@ import React from "react";
 
 const USModalCard = (props) => {
   let date = new Date(props.date);
-  date.setDate(date.getDate());
+  date.setDate(date.getDate() +1 );
   if (props.error === "Document not found") {
     return (
       <div className="modal-card">

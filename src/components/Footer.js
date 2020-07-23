@@ -4,8 +4,8 @@ import { Footer, Level } from "react-bulma-components";
 const MyFooter = () => {
   return (
     <Footer className="footer">
-      <div className="content has-text-left-aligned">
-        <p className="mb-3">
+      <div className="content has-text-left-aligned columns mb-5">
+        <div className="mb-5 column is-three-fifths is-offset-one-fifth">
           <strong>Contagion Tracker</strong> is a Skunkworks project designed to
           1) visualize the spread of COVID-19 since inception, and 2) depict how
           COVID-19 has become an inescapable object of our attentions. COVID-19
@@ -21,10 +21,10 @@ const MyFooter = () => {
           You can view the whole project (including source code and more
           detailed documentation){" "}
           <a href="https://github.com/gbuchdahl/contagion-tracker">here</a>.
-        </p>
-        <p>
-          <strong>Powered By:</strong>
-        </p>
+        </div>
+        </div>
+<div>
+
 
         <Level className="level">
           <div className="level-item">
