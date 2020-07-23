@@ -4,7 +4,7 @@ import datetime
 import re
 import sys
 import os
-import config
+# import config
 import exceptions
 import utils
 import db
