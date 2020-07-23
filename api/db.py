@@ -1,4 +1,5 @@
 from flask_pymongo import PyMongo
+from exceptions import DocumentNotFoundException
 import utils
 
 def set_db(app):
@@ -77,10 +78,9 @@ def get_us_dpm_by_date(date):
         resList = list(res)
         rv = {"date": date, "len": len(resList), "val": resList} 
         return rv
-    return utils.DOCUMENT_NOT_FOUND
+    raise DocumentNotFoundException()
 
 
-# TODO: fix error with aggregation and StopIteration
 def get_dpm_by_state_and_date(stateCode, date):
     """
     return document from db_.covid_us with 'state_code' field
@@ -100,7 +100,7 @@ def get_dpm_by_state_and_date(stateCode, date):
             '$match': {
                 'state_code': stateCode.upper(),
                 }
-            },
+            }
     lookupStage  = {
                         '$lookup': {
                             'from': 'us_states', 
@@ -169,8 +169,9 @@ def get_dpm_by_state_and_date(stateCode, date):
         for r in res:
             res = r
             break
-        return res
-    return utils.DOCUMENT_NOT_FOUND 
+        if type(res) == dict:
+            return res
+    raise DocumentNotFoundException() 
 
 def get_by_state_and_date(stateCode, date):
     """
@@ -200,7 +201,7 @@ def get_by_state_and_date(stateCode, date):
     if res:
         res["_id"] = str(res["_id"])
         return res
-    return utils.DOCUMENT_NOT_FOUND 
+    raise DocumentNotFoundException() 
 
 
 def get_by_country_and_date(countryCode, date):
@@ -231,7 +232,7 @@ def get_by_country_and_date(countryCode, date):
     if res:
         res["_id"] = str(res["_id"])
         return res
-    return utils.DOCUMENT_NOT_FOUND 
+    raise DocumentNotFoundException() 
 
 
 def get_dpm_by_country_and_date(countryCode, date):
@@ -273,8 +274,9 @@ def get_dpm_by_country_and_date(countryCode, date):
         for r in res:
             res = r
             break
-        return res
-    return utils.DOCUMENT_NOT_FOUND 
+        if type(res) == dict:
+            return res
+    raise DocumentNotFoundException() 
 
 
 def get_world_dpm_by_date(date):
@@ -294,4 +296,4 @@ def get_world_dpm_by_date(date):
         resList = list(res)
         rv = {"date": date, "len": len(resList), "val": resList}
         return rv
-    return utils.DOCUMENT_NOT_FOUND
+    raise DocumentNotFoundException()

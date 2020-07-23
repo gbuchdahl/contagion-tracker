@@ -15,7 +15,7 @@ import { scaleLinear } from "d3-scale";
 import allStates from "../data/allStates.json";
 import LinearGradient from './LinearGradient.js';
 
-const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+// const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
 const geoData = require('../data/stateData.json')
 
@@ -24,7 +24,7 @@ let ids = geoData["objects"]["states"]["geometries"].map(
 );
 
 // get a list of all the states by 2 letter code
-const states = ids.map(id => allStates.find((doc) => (id == doc.val))["id"])
+const states = ids.map(id => allStates.find((doc) => (id === doc.val))["id"])
 
 const offsets = {
   VT: [50, -8],

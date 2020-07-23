@@ -26,19 +26,9 @@ class Slider extends Component {
 
   async handlePlay() {
     let playing = this.state.playing;
-    if (playing) {
-      console.log("Playing");
-    } else {
-      console.log("Not playing :)");
-    }
     // if it was paused before
     if (!playing) {
       this.setState({ playing: true });
-      if (this.state.playing) {
-        console.log("YEET");
-      } else {
-        console.log("FUCK");
-      }
       let start = parseInt(this.state.val);
 
       // iterate until you get to present day
@@ -62,7 +52,7 @@ class Slider extends Component {
   render() {
     return (
       <Columns className="is-vcentered">
-        <Columns.Column className="is-four-fifths">
+        <Columns.Column className="is-one-half">
           <input
             className="slider is-danger is-fullwidth"
             step="1"
@@ -73,8 +63,8 @@ class Slider extends Component {
             onChange={this.handleSlider}
           />
         </Columns.Column>
-        <Columns.Column>
-          <Button onClick={this.handlePlay} className="is-danger">
+        <Columns.Column className="is-one-quarter has-text-centered">
+          <Button onClick={this.handlePlay} className="is-danger is-fullwidth">
             <p>{this.state.playing ? "Pause" : "Play"}</p>
           </Button>
         </Columns.Column>

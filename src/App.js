@@ -18,14 +18,14 @@ function App() {
       <Container className="is-centered">
         <Columns>
           <Columns.Column />
-          <Columns.Column>
+          <Columns.Column className="is-four-fifths">
             <Tabs className="is-centered is-boxed">
               <ul>
                 <li className={location === "USA" ? "is-active" : ""}>
-                  <a onClick={() => setLocation("USA")}>US Data</a>
+                  <a onClick={() => setLocation("USA")}>US Deaths Per Million</a>
                 </li>
                 <li className={location === "Global" ? "is-active" : ""}>
-                  <a onClick={() => setLocation("Global")}>Global Data</a>
+                  <a onClick={() => setLocation("Global")}>Global Deaths Per Million</a>
                 </li>
               </ul>
             </Tabs>
@@ -33,9 +33,11 @@ function App() {
           <Columns.Column />
         </Columns>
         <Columns>
-          <Columns.Column className="is-three-fifths is-offset-one-fifth">
+          <Columns.Column />
+          <Columns.Column className="is-four-fifths">
             {location === "USA" ? <USMap /> : <WorldMap />}
           </Columns.Column>
+          <Columns.Column />
         </Columns>
       </Container>
       <Footer />
