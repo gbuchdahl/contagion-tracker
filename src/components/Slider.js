@@ -55,7 +55,7 @@ class Slider extends Component {
       <Columns className="is-vcentered">
         <Columns.Column className="is-one-half">
           <input
-            className="slider is-danger is-fullwidth"
+            className="slider is-large is-circle is-danger is-fullwidth"
             step="1"
             min="0"
             max={this.props.num_days}
