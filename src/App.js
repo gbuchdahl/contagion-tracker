@@ -22,10 +22,14 @@ function App() {
             <Tabs className="is-centered is-boxed">
               <ul>
                 <li className={location === "USA" ? "is-active" : ""}>
-                  <a onClick={() => setLocation("USA")}>US Deaths Per Million</a>
+                  <a onClick={() => setLocation("USA")}>
+                    US Deaths Per Million
+                  </a>
                 </li>
                 <li className={location === "Global" ? "is-active" : ""}>
-                  <a onClick={() => setLocation("Global")}>Global Deaths Per Million</a>
+                  <a onClick={() => setLocation("Global")}>
+                    Global Deaths Per Million
+                  </a>
                 </li>
               </ul>
             </Tabs>

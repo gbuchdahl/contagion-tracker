@@ -1,11 +1,16 @@
 import React, { Component } from "react";
-import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
-import { Container} from "react-bulma-components";
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  ZoomableGroup,
+} from "react-simple-maps";
+import { Container } from "react-bulma-components";
 import { scaleLinear } from "d3-scale";
 import Slider from "./Slider";
 
-import LinearGradient from './LinearGradient.js';
-import CountryModalCard from './CountryModalCard';
+import LinearGradient from "./LinearGradient.js";
+import CountryModalCard from "./CountryModalCard";
 
 // import '../data/countries.json'
 
@@ -33,7 +38,7 @@ const gradientData = {
   fromColor: "#e5e5e5",
   toColor: "#ff5233",
   min: 0,
-  max: `${MAX_DEATHS}+`
+  max: `${MAX_DEATHS}+`,
 };
 
 // 3 digit country codes, taken from the thing that made the map
@@ -64,7 +69,7 @@ class WorldMap extends Component {
       fills: gray,
       index: undefined,
       modal: false,
-      data: undefined
+      data: undefined,
     };
 
     this.fetchFills = this.fetchFills.bind(this);
@@ -100,38 +105,44 @@ class WorldMap extends Component {
   }
 
   toggleModal = () => {
-    let setting = !(this.state.modal)
-    this.setState({modal: setting})
-    this.generateData(this.state.date, codes[this.state.index])
+    let setting = !this.state.modal;
+    this.setState({ modal: setting });
+    this.generateData(this.state.date, codes[this.state.index]);
     // if (this.state.modal !== false){
     //   this.generateData(this.state.date, codes[this.state.index])
     // }
-  }
+  };
 
   setIndex = (ind) => {
-    this.setState({index: ind});
-  }
+    this.setState({ index: ind });
+  };
 
   buildQuery = (date, code) => {
     return (
-        "/world/" + code + "?date=" +
-        date.getDate() +
-        "_" +
-        (date.getMonth() + 1) +
-        "_" +
-        (date.getYear() + 1900)
-      );
-    }
+      "/world/" +
+      code +
+      "?date=" +
+      date.getDate() +
+      "_" +
+      (date.getMonth() + 1) +
+      "_" +
+      (date.getYear() + 1900)
+    );
+  };
 
   generateData = async (date, code) => {
-    if (code === undefined) {return ""}
-    let query = this.buildQuery(date, code)
+    if (code === undefined) {
+      return "";
+    }
+    let query = this.buildQuery(date, code);
 
-    let newData = await fetch(query).then((response) =>
-    response.json());
-
-    this.setState({data: newData})
-  }
+    let newData = await fetch(query).then((response) => response.json());
+    if (newData.error === "Document not found") {
+      newData["code"] = code;
+      newData["date"] = date;
+    }
+    this.setState({ data: newData });
+  };
 
   render() {
     return (
@@ -141,10 +152,16 @@ class WorldMap extends Component {
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
 
-        <div className={(this.state.modal === true) ? "modal is-active" : "modal"}>
-            <div onClick={this.toggleModal} className="modal-background"></div>
-            <CountryModalCard {... this.state.data}/>
-            <button onClick={this.toggleModal} className="modal-close is-large" aria-label="close"></button>
+        <div
+          className={this.state.modal === true ? "modal is-active" : "modal"}
+        >
+          <div onClick={this.toggleModal} className="modal-background"></div>
+          <CountryModalCard {...this.state.data} />
+          <button
+            onClick={this.toggleModal}
+            className="modal-close is-large"
+            aria-label="close"
+          ></button>
         </div>
         <ComposableMap>
           <ZoomableGroup zoom={1}>
@@ -158,7 +175,7 @@ class WorldMap extends Component {
                       fill={this.state.fills[index]}
                       stroke="#FFF"
                       onMouseEnter={() => this.setIndex(index)}
-                      onMouseLeave={()=> this.setIndex(undefined)}
+                      onMouseLeave={() => this.setIndex(undefined)}
                       onClick={() => this.toggleModal()}
                     />
                   );

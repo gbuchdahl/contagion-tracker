@@ -12,7 +12,7 @@ class Slider extends Component {
     this.state = {
       playing: false,
       val: 0,
-      speed: 800
+      speed: 800,
     };
 
     this.handleSlider = this.handleSlider.bind(this);
@@ -68,31 +68,52 @@ class Slider extends Component {
           <Button onClick={this.handlePlay} className="is-danger is-fullwidth">
             <p>{this.state.playing ? "Pause" : "Play"}</p>
           </Button>
-          { this.state.playing && 
-          <div className="field has-addons mt-2">
-            <div className="columns is-fullwidth is-gapless">
-            <p className="control column mx-0">
-              <button onClick={()=> this.setState({speed:400})} className={(this.state.speed === 400) ? "is-active button" : "button"}>
-                <span className="has-text-weight-bold">x2</span>
-              </button>
-            </p>
-            <p className="control column mx-0">
-              <button onClick={()=> this.setState({speed:200})} className={(this.state.speed === 200) ? "is-active button" : "button"}>
-                <span className="has-text-weight-bold">x4</span>
-              </button>
-            </p>
-            <p className="control columnmx-0">
-              <button onClick={()=> this.setState({speed:100})} className={(this.state.speed === 100) ? "is-active button" : "button"}>
-                <span className="has-text-weight-bold">x8</span>
-              </button>
-            </p>
-            <p className="control column  mx-0">
-              <button onClick={()=> this.setState({speed:800})} className={(this.state.speed === 800) ? "is-active button" : "button"}>
-              <span className="has-text-weight-bold">x1</span>
-              </button>
-            </p>
+          {this.state.playing && (
+            <div className="field has-addons mt-2">
+              <div className="columns is-fullwidth is-gapless">
+                <p className="control column mx-0">
+                  <button
+                    onClick={() => this.setState({ speed: 400 })}
+                    className={
+                      this.state.speed === 400 ? "is-active button" : "button"
+                    }
+                  >
+                    <span className="has-text-weight-bold">x2</span>
+                  </button>
+                </p>
+                <p className="control column mx-0">
+                  <button
+                    onClick={() => this.setState({ speed: 200 })}
+                    className={
+                      this.state.speed === 200 ? "is-active button" : "button"
+                    }
+                  >
+                    <span className="has-text-weight-bold">x4</span>
+                  </button>
+                </p>
+                <p className="control columnmx-0">
+                  <button
+                    onClick={() => this.setState({ speed: 100 })}
+                    className={
+                      this.state.speed === 100 ? "is-active button" : "button"
+                    }
+                  >
+                    <span className="has-text-weight-bold">x8</span>
+                  </button>
+                </p>
+                <p className="control column  mx-0">
+                  <button
+                    onClick={() => this.setState({ speed: 800 })}
+                    className={
+                      this.state.speed === 800 ? "is-active button" : "button"
+                    }
+                  >
+                    <span className="has-text-weight-bold">x1</span>
+                  </button>
+                </p>
+              </div>
             </div>
-          </div>}
+          )}
         </Columns.Column>
       </Columns>
     );

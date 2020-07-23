@@ -6,25 +6,25 @@ import {
   Geography,
   Marker,
   Annotation,
-  ZoomableGroup
+  ZoomableGroup,
 } from "react-simple-maps";
 import { Container } from "react-bulma-components";
 import Slider from "./Slider";
 import { scaleLinear } from "d3-scale";
 
 import allStates from "../data/allStates.json";
-import LinearGradient from './LinearGradient.js';
+import LinearGradient from "./LinearGradient.js";
 
 // const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
-const geoData = require('../data/stateData.json')
+const geoData = require("../data/stateData.json");
 
 let ids = geoData["objects"]["states"]["geometries"].map(
   (state) => state["id"]
 );
 
 // get a list of all the states by 2 letter code
-const states = ids.map(id => allStates.find((doc) => (id === doc.val))["id"])
+const states = ids.map((id) => allStates.find((doc) => id === doc.val)["id"]);
 
 const offsets = {
   VT: [50, -8],
@@ -56,7 +56,7 @@ const gradientData = {
   fromColor: "#e5e5e5",
   toColor: "#ff5233",
   min: 0,
-  max: `${MAX_DEATHS}+`
+  max: `${MAX_DEATHS}+`,
 };
 
 // QUERY API for DPM
@@ -97,7 +97,7 @@ class USMap extends Component {
       response.json()
     );
     const DPM_docs = res.val;
-    console.log(DPM_docs)
+    console.log(DPM_docs);
     let fills = states.map((state) => {
       let doc = DPM_docs.find((doc) => doc["state_code"] === state);
       let deaths = undefined;
