@@ -184,6 +184,17 @@ def get_us_cpm_avg_by_date():
     raise exceptions.InvalidRequestException(request.method)
 
 
+#@app.route("/world-hashtags/<countryCode>", methods=["GET"])
+#def get_world_hashtags(countryCode):
+#    if request.method == "GET":
+#        if utils.validate_country_code(countryCode):
+#            date = utils.get_date_from_args()
+#            maxSize = utils.get_maxSize_from_args()
+#            res = db.get_hashtags_by_country(countryCode, date, maxSize)
+#            return res
+#        raise exceptions.InvalidCountryException(countryCode)
+#    raise exceptions.InvalidRequestException(request.method)
+
 @app.errorhandler(exceptions.APIException)
 def handle_date_error(error):
     return jsonify(error.to_dict()), error.get_status()

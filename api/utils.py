@@ -32,6 +32,12 @@ def get_window_from_args():
         raise InvalidWindowException(window)
     return window
 
+#def get_maxSize_from_args():
+#    maxSize = requests.args.get("maxSize")
+#    if maxSize is None:
+#        raise InvalidSizeException(maxSize)
+
+
 def validate_country_code(countryCode):
     """
     return True if countryCode is valid, False otherwise

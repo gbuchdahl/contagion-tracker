@@ -477,7 +477,7 @@ def get_world_cpm_avg_by_date(date, windowSize):
         }, {
             '$group': {
                 '_id': '$country_code', 
-                'avg_new_cases_per_million': {
+                'new_cases_per_million': {
                     '$avg': '$new_cases_per_million'
                 }, 
                 'date': {
@@ -488,7 +488,7 @@ def get_world_cpm_avg_by_date(date, windowSize):
             '$project': {
                 '_id': 0, 
                 'country_code': '$_id', 
-                'avg_new_cases_per_million': 1, 
+                'new_cases_per_million': 1, 
                 'date': '$date'
             }
         }, {
@@ -521,7 +521,7 @@ def get_world_dpm_avg_by_date(date, windowSize):
         }, {
             '$group': {
                 '_id': '$country_code', 
-                'avg_new_deaths_per_million': {
+                'new_deaths_per_million': {
                     '$avg': '$new_deaths_per_million'
                 }, 
                 'date': {
@@ -532,7 +532,7 @@ def get_world_dpm_avg_by_date(date, windowSize):
             '$project': {
                 '_id': 0, 
                 'country_code': '$_id', 
-                'avg_new_deaths_per_million': 1, 
+                'new_deaths_per_million': 1, 
                 'date': '$date'
             }
         }, {
@@ -604,7 +604,7 @@ def get_us_dpm_avg_by_date(date, windowSize):
         }, {
             '$group': {
                 '_id': '$state_code', 
-                'avg_new_deaths_per_million': {
+                'new_deaths_per_million': {
                     '$avg': '$new_deaths_per_million'
                 }, 
                 'date': {
@@ -615,7 +615,7 @@ def get_us_dpm_avg_by_date(date, windowSize):
             '$project': {
                 '_id': 0, 
                 'state_code': '$_id', 
-                'avg_new_deaths_per_million': 1, 
+                'new_deaths_per_million': 1, 
                 'date': '$date', 
             }
         }, {
@@ -686,7 +686,7 @@ def get_us_cpm_avg_by_date(date, windowSize):
         }, {
             '$group': {
                 '_id': '$state_code', 
-                'avg_new_cases_per_million': {
+                'new_cases_per_million': {
                     '$avg': '$new_cases_per_million'
                 }, 
                 'date': {
@@ -697,7 +697,7 @@ def get_us_cpm_avg_by_date(date, windowSize):
             '$project': {
                 '_id': 0, 
                 'state_code': '$_id', 
-                'avg_new_cases_per_million': 1, 
+                'new_cases_per_million': 1, 
                 'date': '$date', 
             }
         }, {
@@ -710,5 +710,40 @@ def get_us_cpm_avg_by_date(date, windowSize):
     if res:
         resList = list(res)
         rv = {"date": date, "len": len(resList), "window_size": windowSize, "val": resList}
+        return rv
+    raise DocumentNotFoundException()
+
+def get_hashtags_by_country(countryCode, date, maxSize):
+    regionDoc = db_.world_countries.find_one(
+            {"country_code": countryCode.upper()},
+            {"_id":0, "region_code": 1})
+    print(regionDoc)
+    pipeline = [
+        {
+            '$match': {
+                'region_code': regionDoc["region_code"], 
+                'start_date': {
+                    '$lte': date
+                }, 
+                'end_date': {
+                    '$gte': date
+                }
+            }
+        }, {
+            '$limit': 100
+        }, {
+            '$sort': {
+                'frequency_per_thousand': -1
+            }
+        }, {
+            "$project": {
+                "_id": 0,
+                }
+            }
+    ]
+    res = db_.hashtags.aggregate(pipeline)
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "val": resList}
         return rv
     raise DocumentNotFoundException()
