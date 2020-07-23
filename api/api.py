@@ -3,20 +3,24 @@ from flask import Flask, request, render_template_string, render_template, abort
 import datetime
 import re
 import sys
-
+import os
 import config
 import exceptions
 import utils
 import db
 
-app = Flask(__name__)
-app.config["MONGO_URI"] = config.MONGO_URI
+app = Flask(__name__, static_folder='../build', static_url_path='/')
+app.config["MONGO_URI"] = os.environ["MONGO_URI"]
 
 try:
     db.set_db(app)
 except RuntimeError as e:
     print("Failed to set up database") 
     sys.exit(127)
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 @app.route("/time")
 def get_time(): 
