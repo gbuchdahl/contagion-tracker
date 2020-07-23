@@ -20,7 +20,6 @@ def test_get_time_with_GET(client):
     assert r.is_json
     assert r.get_json().get("time")
 
-
 def test_get_by_state_with_GET(client):
     r = client.get(URL_BASE.format("us/NY"))
     assert r.status_code == 200
@@ -38,6 +37,7 @@ def test_get_by_state_with_PUT(client):
 def test_get_by_state_with_DELETE(client):
     r = client.delete(URL_BASE.format("us/NY"))
     assert r.status_code == 405
+
 
 def test_get_by_state_with_valid_date(client):
     r = client.get(URL_BASE.format("us/NY?date=19_07_2020"))
@@ -75,6 +75,7 @@ def test_get_dpm_by_state_with_GET(client):
     assert r.is_json
     assert r.get_json().get("new_deaths_per_million") is not None
 
+
 def test_get_dpm_by_state_with_valid_date(client):
     r = client.get(URL_BASE.format("us-dpm/NY?date=19_07_2020"))
     assert r.status_code == 200
@@ -101,6 +102,7 @@ def test_get_dpm_by_state_with_DELETE(client):
     r = client.delete(URL_BASE.format("us-dpm/NY"))
     assert r.status_code == 405
 
+
 def test_get_dpm_by_state_with_date_out_of_range(client):
     r = client.get(URL_BASE.format("us-dpm/NY?date=10_05_2100"))
     assert r.status_code == 404
@@ -121,6 +123,7 @@ def test_get_by_country_with_PUT(client):
 def test_get_by_country_with_DELETE(client):
     r = client.delete(URL_BASE.format("world/JAM"))
     assert r.status_code == 405
+
 
 def test_get_by_country_with_valid_date(client):
     r = client.get(URL_BASE.format("world/GBR?date=20_07_2020"))
