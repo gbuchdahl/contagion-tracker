@@ -1,5 +1,6 @@
 from flask_pymongo import PyMongo
 from exceptions import DocumentNotFoundException
+import datetime
 import utils
 
 def set_db(app):
@@ -55,6 +56,74 @@ def get_us_dpm_by_date(date):
                                         {
                                             '$divide': [
                                                 '$new_deaths', '$data.population'
+                                            ]
+                                        }, 1000000
+                                    ]}
+                                , 3]
+                            },
+                            'state_code':1,
+                            'date':1,
+                            '_id': 0
+                        }
+                    }
+    res = db_.covid_us.aggregate(
+            [
+                dateMatch,
+                {"$sort": {"state_code": 1}},
+                lookupStage,
+                dataExistsMatch,
+                addDataStage,
+                projectionStage
+            ])
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "val": resList} 
+        return rv
+    raise DocumentNotFoundException()
+
+
+def get_us_cpm_by_date(date):
+    dateMatch  = {
+                    '$match': {
+                        'date': date,
+                        'new_cases': {'$type': 'int'}
+                        }
+                    }
+    lookupStage  = {
+                        '$lookup': {
+                            'from': 'us_states', 
+                            'localField': 'state_code', 
+                            'foreignField': 'state_code', 
+                            'as': 'data'
+                        }
+                    }
+    dataExistsMatch = {
+            '$match': {
+                '$and': [
+                    {'data': {'$size': 1}},
+                    {'data.0.population': {'$exists': True}}
+                    ]
+                }
+            }
+    
+    addDataStage = {
+                        '$addFields': {
+                            'data': {
+                                '$arrayElemAt': [
+                                    '$data', 0
+                                ]
+                            }
+                        }
+                    }
+
+    projectionStage = {
+                        '$project': {
+                            'new_cases_per_million': {
+                                '$round': [
+                                    {'$multiply': [
+                                        {
+                                            '$divide': [
+                                                '$new_cases', '$data.population'
                                             ]
                                         }, 1000000
                                     ]}
@@ -369,5 +438,277 @@ def get_world_dpm_by_date(date):
     if res:
         resList = list(res)
         rv = {"date": date, "len": len(resList), "val": resList}
+        return rv
+    raise DocumentNotFoundException()
+
+
+def get_world_cpm_by_date(date):
+    res = db_.covid_world.aggregate(
+            [
+                {"$match": {"date":date}},
+                {"$sort": {"country_code": 1}},
+                {"$project": {
+                    "new_cases_per_million": 1,
+                    "country_code": 1,
+                    "date": 1,
+                    "_id": 0
+                    }
+                }
+            ])
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "val": resList}
+        return rv
+    raise DocumentNotFoundException()
+
+def get_world_cpm_avg_by_date(date, windowSize):
+    pipeline = [
+        {
+            '$match': {
+                'date': {
+                    '$lte': date , 
+                    '$gt': date - datetime.timedelta(days=windowSize)
+                }
+            }
+        }, {
+            '$sort': {
+                'country_code': 1
+            }
+        }, {
+            '$group': {
+                '_id': '$country_code', 
+                'avg_new_cases_per_million': {
+                    '$avg': '$new_cases_per_million'
+                }, 
+                'date': {
+                    '$max': '$date'
+                }
+            }
+        }, {
+            '$project': {
+                '_id': 0, 
+                'country_code': '$_id', 
+                'avg_new_cases_per_million': 1, 
+                'date': '$date'
+            }
+        }, {
+            "$sort": {
+                "country_code": 1
+                }
+            }
+    ]
+    res = db_.covid_world.aggregate(pipeline)
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "window_size": windowSize, "val": resList}
+        return rv
+    raise DocumentNotFoundException()
+
+
+def get_world_dpm_avg_by_date(date, windowSize):
+    pipeline = [
+        {
+            '$match': {
+                'date': {
+                    '$lte': date, 
+                    '$gt': date - datetime.timedelta(days=windowSize)
+                }
+            }
+        }, {
+            '$sort': {
+                'country_code': 1
+            }
+        }, {
+            '$group': {
+                '_id': '$country_code', 
+                'avg_new_deaths_per_million': {
+                    '$avg': '$new_deaths_per_million'
+                }, 
+                'date': {
+                    '$max': '$date'
+                }
+            }
+        }, {
+            '$project': {
+                '_id': 0, 
+                'country_code': '$_id', 
+                'avg_new_deaths_per_million': 1, 
+                'date': '$date'
+            }
+        }, {
+            "$sort": {
+                "country_code": 1
+                }
+            }
+    ]
+    res = db_.covid_world.aggregate(pipeline)
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "window_size": windowSize, "val": resList}
+        return rv
+    raise DocumentNotFoundException()
+
+
+def get_us_dpm_avg_by_date(date, windowSize):
+    pipeline = [
+        {
+            '$match': {
+                'date': {
+                    '$lte': date, 
+                    '$gt': date - datetime.timedelta(days=windowSize) 
+                }, 
+                'new_deaths': {
+                    '$type': 'int'
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'us_states', 
+                'localField': 'state_code', 
+                'foreignField': 'state_code', 
+                'as': 'data'
+            }
+        }, {
+            '$match': {
+                'data': {
+                    '$size': 1
+                }, 
+                'data.0.population': {
+                    '$type': 'int'
+                }
+            }
+        }, {
+            '$addFields': {
+                'data': {
+                    '$arrayElemAt': [
+                        '$data', 0
+                    ]
+                }
+            }
+        }, {
+            '$addFields': {
+                'new_deaths_per_million': {
+                    '$round': [
+                        {
+                            '$multiply': [
+                                {
+                                    '$divide': [
+                                        '$new_deaths', '$data.population'
+                                    ]
+                                }, 1000000
+                            ]
+                        }, 3
+                    ]
+                }, 
+            }
+        }, {
+            '$group': {
+                '_id': '$state_code', 
+                'avg_new_deaths_per_million': {
+                    '$avg': '$new_deaths_per_million'
+                }, 
+                'date': {
+                    '$max': '$date'
+                }
+            }
+        }, {
+            '$project': {
+                '_id': 0, 
+                'state_code': '$_id', 
+                'avg_new_deaths_per_million': 1, 
+                'date': '$date', 
+            }
+        }, {
+                '$sort': {
+                    'state_code': 1
+                    }
+                }
+    ]
+    res = db_.covid_us.aggregate(pipeline)
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "window_size": windowSize, "val": resList}
+        return rv
+    raise DocumentNotFoundException()
+
+def get_us_cpm_avg_by_date(date, windowSize):
+    pipeline = [
+        {
+            '$match': {
+                'date': {
+                    '$lte': date, 
+                    '$gt': date - datetime.timedelta(days=windowSize) 
+                }, 
+                'new_cases': {
+                    '$type': 'int'
+                }
+            }
+        }, {
+            '$lookup': {
+                'from': 'us_states', 
+                'localField': 'state_code', 
+                'foreignField': 'state_code', 
+                'as': 'data'
+            }
+        }, {
+            '$match': {
+                'data': {
+                    '$size': 1
+                }, 
+                'data.0.population': {
+                    '$type': 'int'
+                }
+            }
+        }, {
+            '$addFields': {
+                'data': {
+                    '$arrayElemAt': [
+                        '$data', 0
+                    ]
+                }
+            }
+        }, {
+            '$addFields': {
+                'new_cases_per_million': {
+                    '$round': [
+                        {
+                            '$multiply': [
+                                {
+                                    '$divide': [
+                                        '$new_cases', '$data.population'
+                                    ]
+                                }, 1000000
+                            ]
+                        }, 3
+                    ]
+                }, 
+            }
+        }, {
+            '$group': {
+                '_id': '$state_code', 
+                'avg_new_cases_per_million': {
+                    '$avg': '$new_cases_per_million'
+                }, 
+                'date': {
+                    '$max': '$date'
+                }
+            }
+        }, {
+            '$project': {
+                '_id': 0, 
+                'state_code': '$_id', 
+                'avg_new_cases_per_million': 1, 
+                'date': '$date', 
+            }
+        }, {
+            "$sort": {
+                'state_code': 1
+                }
+        }
+    ]
+    res = db_.covid_us.aggregate(pipeline)
+    if res:
+        resList = list(res)
+        rv = {"date": date, "len": len(resList), "window_size": windowSize, "val": resList}
         return rv
     raise DocumentNotFoundException()

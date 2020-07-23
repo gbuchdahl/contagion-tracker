@@ -236,3 +236,120 @@ def test_get_world_dpm_by_date_with_date_out_of_range(client):
     r = client.get(URL_BASE.format("world-dpm-by-date?01_10_2100"))
     assert r.status_code == 200
     assert r.get_json().get("len") == 0
+
+
+def test_get_world_cpm_avg_by_date_with_GET(client):
+    r = client.get(URL_BASE.format("world-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 200
+    assert r.get_json().get("len") != 0
+
+def test_get_world_cpm_avg_by_date_with_POST(client):
+    r = client.post(URL_BASE.format("world-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 405
+
+def test_get_world_cpm_avg_by_date_with_PUT(client):
+    r = client.put(URL_BASE.format("world-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 405
+
+def test_get_world_cpm_avg_by_date_with_DELETE(client):
+    r = client.delete(URL_BASE.format("world-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 405
+
+def test_get_world_cpm_avg_by_date_with_invalid_date(client):
+    r = client.get(URL_BASE.format("world-cpm-avg-by-date?date=asdfasd020&window=5"))
+    assert r.status_code == 400 
+
+def test_get_world_cpm_avg_by_date_with_date_out_of_range(client):
+    r = client.get(URL_BASE.format("world-cpm-avg-by-date?date=10_05_2100&window=5"))
+    assert r.status_code == 200 
+    assert r.get_json().get("len") == 0
+
+def test_get_world_cpm_avg_by_date_with_invalid_window(client):
+    r = client.get(URL_BASE.format("world-cpm-avg-by-date?date=10_05_2020&window=hello"))
+    assert r.status_code == 400
+
+
+def test_get_us_cpm_avg_by_date_with_GET(client):
+    r = client.get(URL_BASE.format("us-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 200
+    assert r.get_json().get("len") != 0
+
+def test_get_us_cpm_avg_by_date_with_POST(client):
+    r = client.post(URL_BASE.format("us-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 405
+
+def test_get_us_cpm_avg_by_date_with_PUT(client):
+    r = client.put(URL_BASE.format("us-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 405
+
+def test_get_us_cpm_avg_by_date_with_DELETE(client):
+    r = client.delete(URL_BASE.format("us-cpm-avg-by-date?date=10_05_2020&window=5"))
+    assert r.status_code == 405
+
+def test_get_us_cpm_avg_by_date_with_invalid_date(client):
+    r = client.get(URL_BASE.format("us-cpm-avg-by-date?date=asdfasd020&window=5"))
+    assert r.status_code == 400 
+
+def test_get_us_cpm_avg_by_date_with_date_out_of_range(client):
+    r = client.get(URL_BASE.format("us-cpm-avg-by-date?date=10_05_2100&window=5"))
+    assert r.status_code == 200 
+    assert r.get_json().get("len") == 0
+
+def test_get_us_cpm_avg_by_date_with_invalid_window(client):
+    r = client.get(URL_BASE.format("us-cpm-avg-by-date?date=10_05_2020&window=hello"))
+    assert r.status_code == 400
+
+
+def test_get_us_cpm_by_date_with_GET(client):
+    r = client.get(URL_BASE.format("us-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 200
+    assert r.get_json().get("len") != 0
+
+def test_get_us_cpm_by_date_with_POST(client):
+    r = client.post(URL_BASE.format("us-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 405
+
+def test_get_us_cpm_by_date_with_PUT(client):
+    r = client.put(URL_BASE.format("us-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 405
+
+def test_get_us_cpm_by_date_with_DELETE(client):
+    r = client.delete(URL_BASE.format("us-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 405
+
+def test_get_us_cpm_by_date_with_invalid_date(client):
+    r = client.get(URL_BASE.format("us-cpm-by-date?date=asdfasd020"))
+    assert r.status_code == 400 
+
+def test_get_us_cpm_by_date_with_date_out_of_range(client):
+    r = client.get(URL_BASE.format("us-cpm-by-date?date=10_05_2100"))
+    assert r.status_code == 200 
+    assert r.get_json().get("len") == 0
+
+
+def test_get_world_cpm_by_date_with_GET(client):
+    r = client.get(URL_BASE.format("world-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 200
+    assert r.get_json().get("len") != 0
+
+def test_get_world_cpm_by_date_with_POST(client):
+    r = client.post(URL_BASE.format("world-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 405
+
+def test_get_world_cpm_by_date_with_PUT(client):
+    r = client.put(URL_BASE.format("world-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 405
+
+def test_get_world_cpm_by_date_with_DELETE(client):
+    r = client.delete(URL_BASE.format("world-cpm-by-date?date=10_05_2020"))
+    assert r.status_code == 405
+
+def test_get_world_cpm_by_date_with_invalid_date(client):
+    r = client.get(URL_BASE.format("world-cpm-by-date?date=asdfasd020"))
+    assert r.status_code == 400 
+
+def test_get_world_cpm_by_date_with_date_out_of_range(client):
+    r = client.get(URL_BASE.format("world-cpm-by-date?date=10_05_2100"))
+    assert r.status_code == 200 
+    assert r.get_json().get("len") == 0
+
