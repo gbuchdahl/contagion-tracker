@@ -50,3 +50,9 @@ class UnknownRouteException(APIException):
     def __init__(self, route, status_code=None, payload=None):
         self.message = "No content found at {}".format(route)
         APIException.__init__(self, self.message, status_code, payload)
+
+class InvalidWindowException(APIException):
+    status_code = 400
+    def __init__(self, window, status_code=None, payload=None):
+        self.message = "Window size: {} not valid".format(window)
+        APIException.__init__(self, self.message, status_code, payload)
