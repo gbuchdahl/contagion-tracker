@@ -181,26 +181,63 @@ def get_by_state_and_date(stateCode, date):
            if date is None, return most recent document
            with 'state_code' field matching stateCode 
     """
-    if not (date is None):
-        res = db_.covid_us.find_one(
-                {
-                    "state_code": stateCode.upper(),
-                    "date": date
-                })
-    else: # return most recent datapoint if date is None
+    dateMatchStage = {'$match': {'state_code': stateCode.upper(), 'date': date}}
+    noDateMatchStage = {'$match': {'state_code': stateCode.upper()}}
+    lookupStage  = {
+                        '$lookup': {
+                            'from': 'us_states', 
+                            'localField': 'state_code', 
+                            'foreignField': 'state_code', 
+                            'as': 'location'
+                        }
+                    }
+    locationExistsMatch = {
+            '$match': {
+                    'location': {'$size': 1}
+                }
+            }
+    addFieldsStage0 = {
+                        '$addFields': {
+                            'location': {
+                                '$arrayElemAt': [
+                                    '$location', 0
+                                ]
+                            }
+                        }
+                    }
+    addFieldsStage1 = {
+                "$addFields" : {
+                    "location": "$location.location"
+                    }
+            }
+    if date:
         res = db_.covid_us.aggregate(
                 [
-                    {"$match": {"state_code": stateCode.upper()}},
-                    {"$sort": {"date": -1}},
-                    {"$limit": 1}
+                    dateMatchStage,
+                    {"$limit": 1},
+                    lookupStage,
+                    locationExistsMatch,
+                    addFieldsStage0,
+                    addFieldsStage1,
                 ])
-        if res:
-            for r in res:
-                res = r
-                break
+    else: # return most recent data point if date is None 
+        res = db_.covid_us.aggregate(
+                [
+                    noDateMatchStage,
+                    {"$sort": {"date": -1}},
+                    {"$limit": 1},
+                    lookupStage,
+                    locationExistsMatch,
+                    addFieldsStage0,
+                    addFieldsStage1,
+                ])
     if res:
-        res["_id"] = str(res["_id"])
-        return res
+        for r in res:
+            res = r
+            break
+        if type(res) == dict:
+            res["_id"] = str(res["_id"])
+            return res
     raise DocumentNotFoundException() 
 
 
@@ -212,26 +249,63 @@ def get_by_country_and_date(countryCode, date):
            if date is None, return most recent document
            with 'country_code' field matching countryCode
     """
+    dateMatchStage = {'$match': {'country_code': countryCode.upper(), 'date': date}}
+    noDateMatchStage = {'$match': {'country_code': countryCode.upper()}}
+    lookupStage  = {
+                        '$lookup': {
+                            'from': 'world_countries', 
+                            'localField': 'country_code', 
+                            'foreignField': 'country_code', 
+                            'as': 'location'
+                        }
+                    }
+    locationExistsMatch = {
+            '$match': {
+                    'location': {'$size': 1}
+                }
+            }
+    addFieldsStage0 = {
+                        '$addFields': {
+                            'location': {
+                                '$arrayElemAt': [
+                                    '$location', 0
+                                ]
+                            }
+                        }
+                    }
+    addFieldsStage1 = {
+                "$addFields" : {
+                    "location": "$location.location"
+                    }
+            }
     if (not date is None):
-        res = db_.covid_world.find_one(
-                {
-                    "country_code": countryCode.upper(),
-                    "date": date
-                })
+        res = db_.covid_world.aggregate(
+                [
+                    dateMatchStage,
+                    {"$limit": 1},
+                    lookupStage,
+                    locationExistsMatch,
+                    addFieldsStage0,
+                    addFieldsStage1,
+                ])
     else: # return most recent data point if date is None 
         res = db_.covid_world.aggregate(
                 [
-                    {"$match": {"country_code": countryCode.upper()}},
+                    noDateMatchStage,
                     {"$sort": {"date": -1}},
-                    {"$limit": 1}
+                    {"$limit": 1},
+                    lookupStage,
+                    locationExistsMatch,
+                    addFieldsStage0,
+                    addFieldsStage1,
                 ])
-        if res:
-            for r in res:
-                res = r
-                break
     if res:
-        res["_id"] = str(res["_id"])
-        return res
+        for r in res:
+            res = r
+            break
+        if type(res) == dict:
+            res["_id"] = str(res["_id"])
+            return res
     raise DocumentNotFoundException() 
 
 
