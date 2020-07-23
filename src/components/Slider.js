@@ -26,19 +26,9 @@ class Slider extends Component {
 
   async handlePlay() {
     let playing = this.state.playing;
-    if (playing) {
-      console.log("Playing");
-    } else {
-      console.log("Not playing :)");
-    }
     // if it was paused before
     if (!playing) {
       this.setState({ playing: true });
-      if (this.state.playing) {
-        console.log("YEET");
-      } else {
-        console.log("FUCK");
-      }
       let start = parseInt(this.state.val);
 
       // iterate until you get to present day
