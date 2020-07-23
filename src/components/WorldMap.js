@@ -82,7 +82,8 @@ class WorldMap extends Component {
   updateVal = async (val) => {
     let newDate = new Date(2020, 2, val);
     this.setState({ date: newDate });
-    this.fetchFills(this.state.date);
+    await this.fetchFills(this.state.date);
+    this.forceUpdate()
   };
 
   async fetchFills(date) {
@@ -152,9 +153,9 @@ class WorldMap extends Component {
   render() {
     return (
       <Container>
-        <h2 className="is-2 has-text-weight-bold has-text-centered">
+        <h1 className="is-size-3 has-text-weight-bold has-text-centered">
           {this.state.date.toDateString().slice(4)}
-        </h2>
+        </h1>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
 
         <div
