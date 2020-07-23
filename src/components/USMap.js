@@ -42,7 +42,8 @@ const offsets = {
 const epoch = new Date(2020, 2, 15); // Start visualization from March 1st
 
 // number of days between march 1st and present
-const NUM_DAYS = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
+const end = new Date(2020, 6, 20)
+const NUM_DAYS = (end.getTime() - epoch.getTime()) / (1000 * 3600 * 24);
 
 // help us make color scheme
 const MAX_DEATHS = 15;
