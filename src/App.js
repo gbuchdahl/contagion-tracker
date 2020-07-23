@@ -27,7 +27,7 @@ function App() {
                   }
                 >
                   <a onClick={() => setLocation("USA")}>
-                    US Deaths Per Million
+                    US Data
                   </a>
                 </li>
                 <li
@@ -36,7 +36,7 @@ function App() {
                   }
                 >
                   <a onClick={() => setLocation("Global")}>
-                    Global Deaths Per Million
+                    Global Data
                   </a>
                 </li>
               </ul>

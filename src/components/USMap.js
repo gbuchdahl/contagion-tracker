@@ -47,12 +47,18 @@ const NUM_DAYS = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 // help us make color scheme
 const MAX_DEATHS = 15;
 
-const colorScale = scaleLinear()
+const MAX_CASES = 500;
+
+const colorScaleDeaths = scaleLinear()
   .domain([0, MAX_DEATHS])
   .range(["#e5e5e5", "#ff5233"]);
 
+const colorScaleCases = scaleLinear()
+  .domain([0, MAX_CASES])
+  .range(["#e5e5e5", "#ffa500"]);
+
 // Gradient Parameters
-const gradientData = {
+const gradientDataDeaths = {
   title: "Deaths per Million",
   fromColor: "#e5e5e5",
   toColor: "#ff5233",
@@ -60,17 +66,15 @@ const gradientData = {
   max: `${MAX_DEATHS}+`,
 };
 
-// QUERY API for DPM
-const query_by_date = (date) => {
-  return (
-    "/us-dpm-by-date?date=" +
-    date.getDate() +
-    "_" +
-    (date.getMonth() + 1) +
-    "_" +
-    (date.getYear() + 1900)
-  );
+const gradientDataCases = {
+  title: "Cases per Million",
+  fromColor: "#e5e5e5",
+  toColor: "#FFA500",
+  min: 0,
+  max: `${MAX_CASES}+`,
 };
+
+
 
 class USMap extends Component {
   constructor(props) {
@@ -84,13 +88,40 @@ class USMap extends Component {
       data: undefined,
       state: undefined,
       modal: false,
+      stat: "cases"
     };
 
     this.fetchFills = this.fetchFills.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.generateData = this.generateData.bind(this);
+    this.query_by_date = this.query_by_date.bind(this);
+    this.toggleStat = this.toggleStat.bind(this);
     this.fetchFills(epoch);
   }
+
+  query_by_date = (date) => {
+    let querystring = undefined;
+    if (this.state.stat === "deaths") {
+      querystring = (
+        "/us-dpm-by-date?date=" +
+        date.getDate() +
+        "_" +
+        (date.getMonth() + 1) +
+        "_" +
+        (date.getYear() + 1900)
+      );
+    } else {
+      querystring = (
+        "/us-cpm-by-date?date=" +
+        date.getDate() +
+        "_" +
+        (date.getMonth() + 1) +
+        "_" +
+        (date.getYear() + 1900)
+      );
+    }
+    return querystring;
+  };
 
   updateVal = async (val) => {
     let newDate = new Date(2020, 2, parseInt(val) + 15);
@@ -99,20 +130,33 @@ class USMap extends Component {
   };
 
   async fetchFills(date) {
-    let res = await fetch(query_by_date(date)).then((response) =>
+    let res = await fetch(this.query_by_date(date)).then((response) =>
       response.json()
     );
     const DPM_docs = res.val;
     let fills = states.map((state) => {
       let doc = DPM_docs.find((doc) => doc["state_code"] === state);
-      let deaths = undefined;
-      if (doc !== undefined) {
-        deaths = doc.new_deaths_per_million;
+
+      if (this.state.stat === "deaths") {
+        let deaths = undefined;
+        if (doc !== undefined) {
+          deaths = doc.new_deaths_per_million;
+        }
+        if (deaths && deaths > MAX_DEATHS) {
+          return "#FF0000";
+        }
+        return deaths === undefined ? "#e5e5e5" : colorScaleDeaths(deaths);
+      } else {
+        let cases = undefined;
+        if (doc !== undefined) {
+          cases = doc.new_cases_per_million;
+        }
+        if (cases && cases > MAX_CASES) {
+          return "#FFA500";
+        }
+        return cases === undefined ? "#e5e5e5" : colorScaleCases(cases); 
       }
-      if (deaths && deaths > MAX_DEATHS) {
-        return "#FF0000";
-      }
-      return deaths === undefined ? "#e5e5e5" : colorScale(deaths);
+ 
     });
     this.setState({ fills });
   }
@@ -122,6 +166,16 @@ class USMap extends Component {
     await this.generateData(this.state.date, this.state.state);
     this.setState({ modal: setting });
   };
+
+  toggleStat = async () => {
+    if (this.state.stat === "cases"){
+      this.setState({stat: "deaths"});
+    } else {
+      this.setState({stat: "cases"});
+    }
+    await this.fetchFills(this.state.date)
+    this.forceUpdate()
+  }
 
   buildQuery = (date, state) => {
     return (
@@ -152,12 +206,24 @@ class USMap extends Component {
 
   render() {
     return (
-      <Container>
+      <div>
         <h2 className="is-size-3 has-text-weight-bold has-text-centered">
           {this.state.date.toDateString().slice(4)}
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
-
+        <div className="columns is-vcentered">
+          <div className="column is-8">
+            <LinearGradient data={(this.state.stat === "cases") ? gradientDataCases : gradientDataDeaths} />
+          </div>
+          <div className='column'>
+            <div onClick={() => this.setState({stat: "cases"})} className={(this.state.stat === "cases") ? "is-warning button mx-2" : "button mx-2"}>
+              <p>Cases</p>
+            </div>
+            <div onClick={() => this.setState({stat: "deaths"})} className={(this.state.stat === "deaths") ? "is-danger button" : "button"}>
+              <p >Deaths</p>
+            </div>
+          </div>
+        </div>
         <div
           className={this.state.modal === true ? "modal is-active" : "modal"}
         >
@@ -172,7 +238,7 @@ class USMap extends Component {
             aria-label="close"
           ></button>
         </div>
-        <LinearGradient data={gradientData}></LinearGradient>
+
         <div className="card mb-5">
           <ComposableMap projection="geoAlbersUsa">
             <ZoomableGroup zoom={1}>
@@ -230,7 +296,7 @@ class USMap extends Component {
             </ZoomableGroup>
           </ComposableMap>
         </div>
-      </Container>
+      </div>
     );
   }
 }
