@@ -14,7 +14,7 @@ import { scaleLinear } from "d3-scale";
 
 import allStates from "../data/allStates.json";
 import LinearGradient from "./LinearGradient.js";
-import USModalCard from './USModalCard'
+import USModalCard from "./USModalCard";
 
 // const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -82,8 +82,8 @@ class USMap extends Component {
       date: epoch,
       fills: gray,
       data: undefined,
-      state: undefined, 
-      modal: false
+      state: undefined,
+      modal: false,
     };
 
     this.fetchFills = this.fetchFills.bind(this);
@@ -93,7 +93,7 @@ class USMap extends Component {
   }
 
   updateVal = async (val) => {
-    let newDate = new Date(2020, 2, parseInt(val)+15);
+    let newDate = new Date(2020, 2, parseInt(val) + 15);
     this.setState({ date: newDate });
     await this.fetchFills(this.state.date);
   };
@@ -173,7 +173,7 @@ class USMap extends Component {
           ></button>
         </div>
         <LinearGradient data={gradientData}></LinearGradient>
-        <div className="card my-5">
+        <div className="card mb-5">
           <ComposableMap projection="geoAlbersUsa">
             <ZoomableGroup zoom={1}>
               <Geographies geography={geoData}>
@@ -185,8 +185,10 @@ class USMap extends Component {
                         stroke="#FFF"
                         geography={geo}
                         fill={this.state.fills[index]}
-                        onMouseEnter={() => this.setState({state: states[index]})}
-                        onMouseLeave={()=> this.setState({state: undefined})}
+                        onMouseEnter={() =>
+                          this.setState({ state: states[index] })
+                        }
+                        onMouseLeave={() => this.setState({ state: undefined })}
                         onClick={() => this.toggleModal()}
                       />
                     ))}
@@ -228,7 +230,6 @@ class USMap extends Component {
             </ZoomableGroup>
           </ComposableMap>
         </div>
-
       </Container>
     );
   }

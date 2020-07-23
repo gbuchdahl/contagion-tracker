@@ -14,11 +14,11 @@ const LinearGradient = (props) => {
   return (
     <div>
       <div style={boxStyle} className="columns my-0">
-        <div className='column is-1'>{data.min}</div>
+        <div className="column is-1">{data.min}</div>
         <span className="column is-10"></span>
-        <span className='column is-1'>{data.max}</span>
+        <span className="column is-1">{data.max}</span>
       </div>
-      <div style={{ ...boxStyle, ...gradientStyle }} ></div>
+      <div style={{ ...boxStyle, ...gradientStyle }}></div>
       <div style={boxStyle} className="has-text-centered mb-4">
         <span>{data.title}</span>
       </div>
