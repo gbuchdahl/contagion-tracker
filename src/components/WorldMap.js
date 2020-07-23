@@ -73,7 +73,8 @@ class WorldMap extends Component {
       index: undefined,
       modal: false,
       data: undefined,
-      stat: "cases"
+      stat: "cases",
+      window: 1,
     };
 
     this.fetchFills = this.fetchFills.bind(this);
@@ -148,22 +149,25 @@ class WorldMap extends Component {
   query_by_date = (date) => {
     let querystring = undefined;
     if (this.state.stat === "deaths") {
-      querystring = (
-        "/world-dpm-by-date?date=" +
-        date.getDate() +
-        "_" +
-        (date.getMonth() + 1) +
-        "_" +
-        (date.getYear() + 1900)
-      );
+        querystring = (
+          "/world-dpm-avg-by-date?date=" +
+          date.getDate() +
+          "_" +
+          (date.getMonth() + 1) +
+          "_" +
+          (date.getYear() + 1900) + 
+          "&window=" + this.state.window
+        );
+
     } else {
       querystring = (
-        "/world-cpm-by-date?date=" +
+        "/world-cpm-avg-by-date?date=" +
         date.getDate() +
         "_" +
         (date.getMonth() + 1) +
         "_" +
-        (date.getYear() + 1900)
+        (date.getYear() + 1900) + 
+        "&window=" + this.state.window
       );
     }
     return querystring;
@@ -212,15 +216,24 @@ class WorldMap extends Component {
           ></button>
         </div>
         <div className="columns is-vcentered">
-          <div className="column is-8">
+          <div className="column is-5 has-text-centered">
             <LinearGradient data={(this.state.stat === "cases") ? gradientDataCases : gradientDataDeaths} />
           </div>
-          <div className='column'>
-            <div onClick={() => this.setState({stat: "cases"})} className={(this.state.stat === "cases") ? "is-warning button mx-2" : "button mx-2"}>
+          <div className='column has-text-centered'>
+            <div onClick={() => this.setState({stat: "cases"})} className={(this.state.stat === "cases") ? "is-warning button mx-1" : "button mx-1"}>
               <p>Cases</p>
             </div>
-            <div onClick={() => this.setState({stat: "deaths"})} className={(this.state.stat === "deaths") ? "is-danger button" : "button"}>
+            <div onClick={() => this.setState({stat: "deaths"})} className={(this.state.stat === "deaths") ? "is-danger button ml-1 mr-5" : "button ml-1 mr-5"}>
               <p >Deaths</p>
+            </div>
+            <div onClick={() => this.setState({window: 1})} className={(this.state.window === 1) ? "is-success button ml-5 mr-1" : "button ml-5 mr-1"}>
+              <p >Daily</p>
+            </div>
+            <div onClick={() => this.setState({window: 3})} className={(this.state.window === 3) ? "is-success button mx-1" : "button mx-1"}>
+              <p >3-day avg</p>
+            </div>
+            <div onClick={() => this.setState({window: 7})} className={(this.state.window === 7) ? "is-success button mx-1" : "button mx-1"}>
+              <p >7-day avg</p>
             </div>
           </div>
         </div>
