@@ -181,7 +181,7 @@ class WorldMap extends Component {
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill={this.state.fills[index]}
+                        fill={this.state.index === index ? "#ABCDEF" : this.state.fills[index]}
                         stroke="#FFF"
                         onMouseEnter={() => this.setIndex(index)}
                         onMouseLeave={() => this.setIndex(undefined)}

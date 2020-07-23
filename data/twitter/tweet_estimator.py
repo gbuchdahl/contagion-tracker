@@ -24,17 +24,18 @@ locations = [("NAMR", "43, -102", "4500km"), ("SAMR", "-25, -61", "4250km"), ("E
 
 # MongoDB Connection
 user = "root"
-password = "contagion"
+password = getpass.getpass()
 uri = "mongodb+srv://{}:{}@data.ybs5g.mongodb.net/?retryWrites=true&w=majority".format(user, password)
 client = MongoClient(uri)
 db = client.data
 
 sample_size = 12000 # Number of tweets to sample
 period_size = 10 # Number of days in a data point
+current_day_string = convert_to_string(datetime.date.today())
 
 for loc_name, coordinates, search_range in locations:
 
-    for start_date in pd.date_range(start="2019-12-31", end="2020-07-20", freq="{}D".format(period_size)):
+    for start_date in pd.date_range(start="2019-12-31", end=current_day_string, freq="{}D".format(period_size)):
         to_insert = []
         counts = {}
         total_tweets = 0
