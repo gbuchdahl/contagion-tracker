@@ -24,16 +24,20 @@ const epoch = new Date(2020, 2, 1); // Start visualization from March 1st
 // number of days between march 1st and present
 const NUM_DAYS = (Date.now() - epoch.getTime()) / (1000 * 3600 * 24);
 
-// help us make color scheme
 const MAX_DEATHS = 5;
 
-// plug in a number, outputs a color
-const colorScale = scaleLinear()
+const MAX_CASES = 100;
+
+const colorScaleDeaths = scaleLinear()
   .domain([0, MAX_DEATHS])
   .range(["#e5e5e5", "#ff5233"]);
 
+const colorScaleCases = scaleLinear()
+  .domain([0, MAX_CASES])
+  .range(["#e5e5e5", "#ffa500"]);
+
 // Gradient Parameters
-const gradientData = {
+const gradientDataDeaths = {
   title: "Deaths per Million",
   fromColor: "#e5e5e5",
   toColor: "#ff5233",
@@ -41,22 +45,20 @@ const gradientData = {
   max: `${MAX_DEATHS}+`,
 };
 
+const gradientDataCases = {
+  title: "Cases per Million",
+  fromColor: "#e5e5e5",
+  toColor: "#FFA500",
+  min: 0,
+  max: `${MAX_CASES}+`,
+};
+
+
 // 3 digit country codes, taken from the thing that made the map
 const codes = geoData["objects"]["ne_110m_admin_0_countries"]["geometries"].map(
   (country) => country["properties"]["ISO_A3"]
 );
 
-// QUERY API for DPM
-const query_by_date = (date) => {
-  return (
-    "/world-dpm-by-date?date=" +
-    date.getDate() +
-    "_" +
-    (date.getMonth() + 1) +
-    "_" +
-    (date.getYear() + 1900)
-  );
-};
 
 class WorldMap extends Component {
   constructor(props) {
@@ -70,12 +72,15 @@ class WorldMap extends Component {
       index: undefined,
       modal: false,
       data: undefined,
+      stat: "cases"
     };
 
     this.fetchFills = this.fetchFills.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.setIndex = this.setIndex.bind(this);
     this.generateData = this.generateData.bind(this);
+    this.buildQuery = this.buildQuery.bind(this);
+    this.query_by_date = this.query_by_date.bind(this);
     this.fetchFills(epoch);
   }
 
@@ -87,20 +92,31 @@ class WorldMap extends Component {
   };
 
   async fetchFills(date) {
-    let res = await fetch(query_by_date(date)).then((response) =>
+    let res = await fetch(this.query_by_date(date)).then((response) =>
       response.json()
     );
     const DPM_docs = res.val;
     let fills = codes.map((code) => {
       let doc = DPM_docs.find((country) => country["country_code"] === code);
-      let deaths = undefined;
-      if (doc !== undefined) {
-        deaths = doc.new_deaths_per_million;
+      if (this.state.stat === "deaths") {
+        let deaths = undefined;
+        if (doc !== undefined) {
+          deaths = doc.new_deaths_per_million;
+        }
+        if (deaths && deaths > MAX_DEATHS) {
+          return "#FF0000";
+        }
+        return deaths === undefined ? "#e5e5e5" : colorScaleDeaths(deaths);
+      } else {
+        let cases = undefined;
+        if (doc !== undefined) {
+          cases = doc.new_cases_per_million;
+        }
+        if (cases && cases > MAX_CASES) {
+          return "#FFA500";
+        }
+        return cases === undefined ? "#e5e5e5" : colorScaleCases(cases); 
       }
-      if (deaths && deaths > MAX_DEATHS) {
-        return "#FF0000";
-      }
-      return deaths === undefined ? "#e5e5e5" : colorScale(deaths);
     });
     this.setState({ fills });
   }
@@ -126,6 +142,30 @@ class WorldMap extends Component {
       "_" +
       (date.getYear() + 1900)
     );
+  };
+
+  query_by_date = (date) => {
+    let querystring = undefined;
+    if (this.state.stat === "deaths") {
+      querystring = (
+        "/world-dpm-by-date?date=" +
+        date.getDate() +
+        "_" +
+        (date.getMonth() + 1) +
+        "_" +
+        (date.getYear() + 1900)
+      );
+    } else {
+      querystring = (
+        "/world-cpm-by-date?date=" +
+        date.getDate() +
+        "_" +
+        (date.getMonth() + 1) +
+        "_" +
+        (date.getYear() + 1900)
+      );
+    }
+    return querystring;
   };
 
   generateData = async (date, code) => {
@@ -170,7 +210,19 @@ class WorldMap extends Component {
             aria-label="close"
           ></button>
         </div>
-        <LinearGradient data={gradientData}></LinearGradient>
+        <div className="columns is-vcentered">
+          <div className="column is-8">
+            <LinearGradient data={(this.state.stat === "cases") ? gradientDataCases : gradientDataDeaths} />
+          </div>
+          <div className='column'>
+            <div onClick={() => this.setState({stat: "cases"})} className={(this.state.stat === "cases") ? "is-warning button mx-2" : "button mx-2"}>
+              <p>Cases</p>
+            </div>
+            <div onClick={() => this.setState({stat: "deaths"})} className={(this.state.stat === "deaths") ? "is-danger button" : "button"}>
+              <p >Deaths</p>
+            </div>
+          </div>
+        </div>
         <div className="card mb-5">
           <ComposableMap>
             <ZoomableGroup zoom={1}>
