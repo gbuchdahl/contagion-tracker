@@ -21,12 +21,20 @@ function App() {
           <Columns.Column className="is-four-fifths">
             <Tabs className="is-centered is-boxed">
               <ul>
-                <li className={location === "USA" ? "is-active" : ""}>
+                <li
+                  className={
+                    location === "USA" ? "is-active is-size-5" : "is-size-5"
+                  }
+                >
                   <a onClick={() => setLocation("USA")}>
                     US Deaths Per Million
                   </a>
                 </li>
-                <li className={location === "Global" ? "is-active" : ""}>
+                <li
+                  className={
+                    location === "Global" ? "is-active is-size-5" : "is-size-5"
+                  }
+                >
                   <a onClick={() => setLocation("Global")}>
                     Global Deaths Per Million
                   </a>
@@ -39,7 +47,11 @@ function App() {
         <Columns>
           <Columns.Column />
           <Columns.Column className="is-four-fifths">
-            {location === "USA" ? <USMap /> : <WorldMap switch={()=>setLocation("USA")}/>}
+            {location === "USA" ? (
+              <USMap />
+            ) : (
+              <WorldMap switch={() => setLocation("USA")} />
+            )}
           </Columns.Column>
           <Columns.Column />
         </Columns>

@@ -14,6 +14,7 @@ import { scaleLinear } from "d3-scale";
 
 import allStates from "../data/allStates.json";
 import LinearGradient from "./LinearGradient.js";
+import USModalCard from './USModalCard'
 
 // const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -80,9 +81,14 @@ class USMap extends Component {
     this.state = {
       date: epoch,
       fills: gray,
+      data: undefined,
+      state: undefined, 
+      modal: false
     };
 
     this.fetchFills = this.fetchFills.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.generateData = this.generateData.bind(this);
     this.fetchFills(epoch);
   }
 
@@ -97,7 +103,6 @@ class USMap extends Component {
       response.json()
     );
     const DPM_docs = res.val;
-    console.log(DPM_docs);
     let fills = states.map((state) => {
       let doc = DPM_docs.find((doc) => doc["state_code"] === state);
       let deaths = undefined;
@@ -112,6 +117,39 @@ class USMap extends Component {
     this.setState({ fills });
   }
 
+  toggleModal = async () => {
+    let setting = !this.state.modal;
+    await this.generateData(this.state.date, this.state.state);
+    this.setState({ modal: setting });
+  };
+
+  buildQuery = (date, state) => {
+    return (
+      "/us/" +
+      state +
+      "?date=" +
+      date.getDate() +
+      "_" +
+      (date.getMonth() + 1) +
+      "_" +
+      (date.getYear() + 1900)
+    );
+  };
+
+  generateData = async (date, state) => {
+    if (state === undefined) {
+      return "";
+    }
+    let query = this.buildQuery(date, state);
+
+    let newData = await fetch(query).then((response) => response.json());
+    if (newData.error === "Document not found") {
+      newData["state"] = state;
+      newData["date"] = date;
+    }
+    this.setState({ data: newData });
+  };
+
   render() {
     return (
       <Container>
@@ -119,6 +157,22 @@ class USMap extends Component {
           {this.state.date.toDateString().slice(4)}
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
+
+        <div
+          className={this.state.modal === true ? "modal is-active" : "modal"}
+        >
+          <div onClick={this.toggleModal} className="modal-background"></div>
+          <USModalCard
+            handle={() => this.setState({ modal: false })}
+            {...this.state.data}
+          />
+          <button
+            onClick={this.toggleModal}
+            className="modal-close is-large"
+            aria-label="close"
+          ></button>
+        </div>
+
         <LinearGradient data={gradientData}></LinearGradient>
         <ComposableMap projection="geoAlbersUsa">
           <ZoomableGroup zoom={1}>
@@ -131,6 +185,9 @@ class USMap extends Component {
                       stroke="#FFF"
                       geography={geo}
                       fill={this.state.fills[index]}
+                      onMouseEnter={() => this.setState({state: states[index]})}
+                      onMouseLeave={()=> this.setState({state: undefined})}
+                      onClick={() => this.toggleModal()}
                     />
                   ))}
                   {geographies.map((geo) => {

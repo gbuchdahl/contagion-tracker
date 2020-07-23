@@ -83,7 +83,7 @@ class WorldMap extends Component {
     let newDate = new Date(2020, 2, val);
     this.setState({ date: newDate });
     await this.fetchFills(this.state.date);
-    this.forceUpdate()
+    this.forceUpdate();
   };
 
   async fetchFills(date) {
@@ -109,9 +109,6 @@ class WorldMap extends Component {
     let setting = !this.state.modal;
     this.setState({ modal: setting });
     this.generateData(this.state.date, codes[this.state.index]);
-    // if (this.state.modal !== false){
-    //   this.generateData(this.state.date, codes[this.state.index])
-    // }
   };
 
   setIndex = (ind) => {
@@ -146,9 +143,9 @@ class WorldMap extends Component {
   };
 
   handleUSA = () => {
-    this.setState({modal: false});
+    this.setState({ modal: false });
     this.props.switch();
-  }
+  };
 
   render() {
     return (
@@ -162,7 +159,11 @@ class WorldMap extends Component {
           className={this.state.modal === true ? "modal is-active" : "modal"}
         >
           <div onClick={this.toggleModal} className="modal-background"></div>
-          <CountryModalCard handleUSA={this.handleUSA} handle={() => this.setState({modal: false})} {...this.state.data} />
+          <CountryModalCard
+            handleUSA={this.handleUSA}
+            handle={() => this.setState({ modal: false })}
+            {...this.state.data}
+          />
           <button
             onClick={this.toggleModal}
             className="modal-close is-large"

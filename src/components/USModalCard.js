@@ -1,20 +1,25 @@
 import React from "react";
 
-const CountryModalCard = (props) => {
+const USModalCard = (props) => {
   let date = new Date(props.date);
-  date.setDate(date.getDate() + 1);
+  date.setDate(date.getDate());
   if (props.error === "Document not found") {
     return (
       <div className="modal-card">
         <header className="modal-card-head">
           <p className="modal-card-title">
-            <span className="has-text-weight-bold">{props.code}</span>
+            <span className="has-text-weight-bold">{props.state}</span>
           </p>
         </header>
         <section className="modal-card-body">
           <p>
             <span className="has-text-weight-bold">Error:</span> Data not found
             for {date.toDateString().slice(4)}.
+          </p>
+        </section>
+        <section className="modal-card-foot">
+          <p className="button is-warning" onClick={props.handle}>
+            Close
           </p>
         </section>
       </div>
@@ -31,6 +36,10 @@ const CountryModalCard = (props) => {
         </header>
         <section className="modal-card-body">
           <ul>
+          <li>
+              <strong>New Tests:</strong>{" "}
+              {props.new_tests.toLocaleString("en")}
+            </li>
             <li>
               <strong>New Cases:</strong> {props.new_cases.toLocaleString("en")}
             </li>
@@ -39,20 +48,12 @@ const CountryModalCard = (props) => {
               {props.total_cases.toLocaleString("en")}
             </li>
             <li>
+              <strong>New Hospitalized:</strong>{" "}
+              {props.new_hospitalized.toLocaleString("en")}
+            </li>
+            <li>
               <strong>New Deaths:</strong>{" "}
               {props.new_deaths.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Cases Per Million:</strong>{" "}
-              {props.new_cases_per_million.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>Total Cases Per Million:</strong>{" "}
-              {props.total_cases_per_million.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Deaths Per Million:</strong>{" "}
-              {props.new_deaths_per_million.toLocaleString("en")}
             </li>
           </ul>
         </section>
@@ -60,11 +61,6 @@ const CountryModalCard = (props) => {
           <p className="button is-warning" onClick={props.handle}>
             Close
           </p>
-          {props.location === "United States" && (
-            <p className="button is-success" onClick={props.handleUSA}>
-              View US Data
-            </p>
-          )}
         </section>
       </div>
     );
@@ -73,4 +69,15 @@ const CountryModalCard = (props) => {
   }
 };
 
-export default CountryModalCard;
+// location: "Michigan"
+// new_cases: 0
+// new_deaths: 0
+// new_hospitalized: 0
+// new_negatives: 0
+// new_tests: 0
+// state_code: "MI"
+// total_cases: 9
+// total_tests: 9
+// _id: "5f184f23f60307de2d8521d8"
+
+export default USModalCard;

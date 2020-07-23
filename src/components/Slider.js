@@ -65,7 +65,10 @@ class Slider extends Component {
           />
         </Columns.Column>
         <Columns.Column className="is-one-quarter has-text-centered">
-          <Button onClick={this.handlePlay} className="is-danger is-fullwidth">
+          <Button
+            onClick={this.handlePlay}
+            className="is-danger is-fullwidth has-text-weight-bold"
+          >
             <p>{this.state.playing ? "Pause" : "Play"}</p>
           </Button>
           {this.state.playing && (
