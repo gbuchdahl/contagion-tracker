@@ -34,31 +34,55 @@ const CountryModalCard = (props) => {
           <h3 className="has-text-weight-semibold is-size-4 mt-0 mb-2">
             COVID Factsheet
           </h3>
-          <ul>
-            <li>
-              <strong>New Cases:</strong> {props.new_cases.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>Total Cases:</strong>{" "}
-              {props.total_cases.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Deaths:</strong>{" "}
-              {props.new_deaths.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Cases Per Million:</strong>{" "}
-              {props.new_cases_per_million.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>Total Cases Per Million:</strong>{" "}
-              {props.total_cases_per_million.toLocaleString("en")}
-            </li>
-            <li>
-              <strong>New Deaths Per Million:</strong>{" "}
-              {props.new_deaths_per_million.toLocaleString("en")}
-            </li>
-          </ul>
+          <div className="columns">
+            <div className="column is-4">
+              <ul>
+                <li>
+                <span class="icon">
+                  <i class="fas fa-hospital"></i>
+                </span><strong> New Cases:</strong> {props.new_cases.toLocaleString("en")}
+                </li>
+                <li>
+                <span class="icon">
+                  <i class="fas fa-hospital-alt"></i>
+                </span><strong> Total Cases:</strong>{" "}
+                  {props.total_cases.toLocaleString("en")}
+                </li>
+                <li>
+                <span class="icon">
+                  <i class="fas fa-book-dead"></i>
+                </span><strong> New Deaths:</strong>{" "}
+                  {props.new_deaths.toLocaleString("en")}
+                </li>
+              </ul>
+            </div>
+            <div className="column">
+              <ul>
+                
+                <li>
+                <span class="icon">
+                  <i class="fas fa-virus"></i>
+                </span><strong> New Cases Per Million:</strong>{" "}
+                  {props.new_cases_per_million.toLocaleString("en")}
+                </li>
+                
+                <li>
+                  <span class="icon">
+                  <i class="fas fa-viruses"></i>
+                </span>
+                  <strong> Total Cases Per Million:</strong>{" "}
+                  {props.total_cases_per_million.toLocaleString("en")}
+                </li>
+                <li>
+                  <span class="icon">
+                    <i class="fas fa-skull-crossbones"></i>
+                  </span>
+                  <strong> New Deaths Per Million:</strong>{" "}
+                  {props.new_deaths_per_million.toLocaleString("en")}
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
         <Cloud />
         <section className="modal-card-foot">
