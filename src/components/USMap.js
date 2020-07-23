@@ -6,12 +6,14 @@ import {
   Geography,
   Marker,
   Annotation,
+  ZoomableGroup
 } from "react-simple-maps";
 import { Container } from "react-bulma-components";
 import Slider from "./Slider";
 import { scaleLinear } from "d3-scale";
 
 import allStates from "../data/allStates.json";
+import LinearGradient from './LinearGradient.js';
 
 // const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -47,6 +49,15 @@ const MAX_DEATHS = 15;
 const colorScale = scaleLinear()
   .domain([0, MAX_DEATHS])
   .range(["#e5e5e5", "#ff5233"]);
+
+// Gradient Parameters
+const gradientData = {
+  title: "Deaths per Million",
+  fromColor: "#e5e5e5",
+  toColor: "#ff5233",
+  min: 0,
+  max: `${MAX_DEATHS}+`
+};
 
 // QUERY API for DPM
 const query_by_date = (date) => {
@@ -109,53 +120,56 @@ class USMap extends Component {
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
         <ComposableMap projection="geoAlbersUsa">
-          <Geographies geography={geoData}>
-            {({ geographies }) => (
-              <>
-                {geographies.map((geo, index) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    stroke="#FFF"
-                    geography={geo}
-                    fill={this.state.fills[index]}
-                  />
-                ))}
-                {geographies.map((geo) => {
-                  const centroid = geoCentroid(geo);
-                  const cur = allStates.find((s) => s.val === geo.id);
-                  return (
-                    <g key={geo.rsmKey + "-name"}>
-                      {cur &&
-                        centroid[0] > -160 &&
-                        centroid[0] < -67 &&
-                        (Object.keys(offsets).indexOf(cur.id) === -1 ? (
-                          <Marker coordinates={centroid}>
-                            <text y="2" fontSize={14} textAnchor="middle">
-                              {cur.id}
-                            </text>
-                          </Marker>
-                        ) : (
-                          <Annotation
-                            subject={centroid}
-                            dx={offsets[cur.id][0]}
-                            dy={offsets[cur.id][1]}
-                          >
-                            <text
-                              x={4}
-                              fontSize={14}
-                              alignmentBaseline="middle"
+          <ZoomableGroup zoom={1}>
+            <Geographies geography={geoData}>
+              {({ geographies }) => (
+                <>
+                  {geographies.map((geo, index) => (
+                    <Geography
+                      key={geo.rsmKey}
+                      stroke="#FFF"
+                      geography={geo}
+                      fill={this.state.fills[index]}
+                    />
+                  ))}
+                  {geographies.map((geo) => {
+                    const centroid = geoCentroid(geo);
+                    const cur = allStates.find((s) => s.val === geo.id);
+                    return (
+                      <g key={geo.rsmKey + "-name"}>
+                        {cur &&
+                          centroid[0] > -160 &&
+                          centroid[0] < -67 &&
+                          (Object.keys(offsets).indexOf(cur.id) === -1 ? (
+                            <Marker coordinates={centroid}>
+                              <text y="2" fontSize={14} textAnchor="middle">
+                                {cur.id}
+                              </text>
+                            </Marker>
+                          ) : (
+                            <Annotation
+                              subject={centroid}
+                              dx={offsets[cur.id][0]}
+                              dy={offsets[cur.id][1]}
                             >
-                              {cur.id}
-                            </text>
-                          </Annotation>
-                        ))}
-                    </g>
-                  );
-                })}
-              </>
-            )}
-          </Geographies>
+                              <text
+                                x={4}
+                                fontSize={14}
+                                alignmentBaseline="middle"
+                              >
+                                {cur.id}
+                              </text>
+                            </Annotation>
+                          ))}
+                      </g>
+                    );
+                  })}
+                </>
+              )}
+            </Geographies>
+          </ZoomableGroup>
         </ComposableMap>
+        <LinearGradient data={gradientData}></LinearGradient>
       </Container>
     );
   }

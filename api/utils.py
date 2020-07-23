@@ -1,11 +1,9 @@
 import datetime
 from flask import request
-from country_codes import COUNTRY_CODES
+import country_codes
 import state_codes
 
-INVALID_STATE_STR ="Error! State code: <b>{}</b> is invalid" 
-INVALID_COUNTRY_STR ="Error! Country code: <b>{}</b> is invalid" 
-DOCUMENT_NOT_FOUND = {"error": "Document not found"}
+from exceptions import InvalidDateException 
 
 def get_date_from_args():
     """
@@ -13,15 +11,18 @@ def get_date_from_args():
                if no date is supplied, return None
     """
     date = request.args.get("date", default=None)
-    if not (date is None):
-        date = datetime.datetime.strptime(date, "%d_%m_%Y")
+    if date:
+        try:
+            date = datetime.datetime.strptime(date, "%d_%m_%Y")
+        except ValueError:
+            raise InvalidDateException()
     return date
 
 def validate_country_code(countryCode):
     """
     return True if countryCode is valid, False otherwise
     """
-    return countryCode.upper() in COUNTRY_CODES
+    return countryCode.upper() in country_codes.COUNTRY_CODES
 
 
 def validate_state_code(stateCode):

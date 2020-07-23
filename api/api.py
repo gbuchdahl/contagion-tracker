@@ -1,9 +1,11 @@
 import datetime
-from flask import Flask, request, render_template_string, render_template, abort
+from flask import Flask, request, render_template_string, render_template, abort, jsonify
 import datetime
+import re
 import sys
 
 import config
+import exceptions
 import utils
 import db
 
@@ -46,11 +48,8 @@ def get_by_state(stateCode, methods=["GET"]):
         if (utils.validate_state_code(stateCode)):
             res = db.get_by_state_and_date(stateCode, date) 
             return res
-        return render_template_string(
-                utils.INVALID_STATE_STR.format(stateCode)), 404
-
-    abort(405)
-
+        raise exceptions.InvalidStateException(stateCode)
+    raise exceptions.InvalidRequestException(request.method)
 
 @app.route("/us-dpm/<stateCode>")
 def get_dpm_by_state(stateCode, methods=["GET"]):
@@ -69,11 +68,8 @@ def get_dpm_by_state(stateCode, methods=["GET"]):
         if (utils.validate_state_code(stateCode)):
             res = db.get_dpm_by_state_and_date(stateCode, date) 
             return res
-        return render_template_string(
-                utils.INVALID_STATE_STR.format(stateCode)), 404
-
-    abort(405)
-
+        raise exceptions.InvalidStateException(stateCode)
+    raise exceptions.InvalidRequestException(request.method)
 
 @app.route("/world/<countryCode>", methods=["GET"])
 def get_by_country(countryCode):
@@ -92,10 +88,8 @@ def get_by_country(countryCode):
         if (utils.validate_country_code(countryCode)):
             res = db.get_by_country_and_date(countryCode, date)
             return res
-        return render_template_string(
-                utils.INVALID_COUNTRY_STR.format(countryCode)), 404
-    abort(405)
-
+        raise exceptions.InvalidCountryException(countryCode)
+    raise exceptions.InvalidRequestException(request.method)
 
 @app.route("/world-dpm/<countryCode>", methods=["GET"])
 def get_dpm_by_country(countryCode):
@@ -115,10 +109,8 @@ def get_dpm_by_country(countryCode):
         if (utils.validate_country_code(countryCode)):
             res = db.get_dpm_by_country_and_date(countryCode, date)
             return res
-        return render_template_string(
-                utils.INVALID_COUNTRY_STR.format(countryCode)), 404
-    abort(405)
-
+        raise exceptions.InvalidCountryException(countryCode)
+    raise exceptions.InvalidRequestException(request.method)
 
 @app.route("/us-dpm-by-date", methods=["GET"])
 def get_us_dpm_by_date():
@@ -126,8 +118,7 @@ def get_us_dpm_by_date():
         date = utils.get_date_from_args()
         res = db.get_us_dpm_by_date(date)
         return res
-    abort(405)
-
+    raise exceptions.InvalidRequestException(request.method)
 
 @app.route("/world-dpm-by-date", methods=["GET"])
 def get_world_dpm_by_date():
@@ -135,11 +126,15 @@ def get_world_dpm_by_date():
         date = utils.get_date_from_args()
         res = db.get_world_dpm_by_date(date)
         return res
-    abort(405)
+    raise exceptions.InvalidRequestException(request.method)
 
 
-@app.errorhandler(405)
-def wrong_request(error):
-    return render_template_string(
-            "{} request is not valid".format(request.method)), 405
+@app.errorhandler(exceptions.APIException)
+def handle_date_error(error):
+    return jsonify(error.to_dict()), error.get_status()
 
+
+@app.errorhandler(404)
+def handle_404(error):
+    e = exceptions.UnknownRouteException(request.url)
+    return jsonify(e.to_dict()), e.get_status()
