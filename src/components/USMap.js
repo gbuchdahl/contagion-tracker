@@ -184,7 +184,7 @@ class USMap extends Component {
                         key={geo.rsmKey}
                         stroke="#FFF"
                         geography={geo}
-                        fill={this.state.fills[index]}
+                        fill={this.state === states[index] ? "#ABCDEF" : this.state.fills[index]}
                         onMouseEnter={() =>
                           this.setState({ state: states[index] })
                         }
