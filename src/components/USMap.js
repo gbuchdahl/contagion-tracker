@@ -119,6 +119,7 @@ class USMap extends Component {
           {this.state.date.toDateString().slice(4)}
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
+        <LinearGradient data={gradientData}></LinearGradient>
         <ComposableMap projection="geoAlbersUsa">
           <ZoomableGroup zoom={1}>
             <Geographies geography={geoData}>
@@ -169,7 +170,6 @@ class USMap extends Component {
             </Geographies>
           </ZoomableGroup>
         </ComposableMap>
-        <LinearGradient data={gradientData}></LinearGradient>
       </Container>
     );
   }

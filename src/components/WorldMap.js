@@ -163,6 +163,7 @@ class WorldMap extends Component {
             aria-label="close"
           ></button>
         </div>
+        <LinearGradient data={gradientData}></LinearGradient>
         <ComposableMap>
           <ZoomableGroup zoom={1}>
             <Geographies geography={geoData}>
@@ -184,7 +185,6 @@ class WorldMap extends Component {
             </Geographies>
           </ZoomableGroup>
         </ComposableMap>
-        <LinearGradient data={gradientData}></LinearGradient>
       </Container>
     );
   }

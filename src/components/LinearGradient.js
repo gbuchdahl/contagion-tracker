@@ -18,7 +18,7 @@ const LinearGradient = (props) => {
         <span className="fill"></span>
         <span>{data.max}</span>
       </div>
-      <div style={{ ...boxStyle, ...gradientStyle }} className="mt8"></div>
+      <div style={{ ...boxStyle, ...gradientStyle }} className="mt-4"></div>
       <div style={boxStyle} className="display-flex-centered">
         <span>{data.title}</span>
       </div>
