@@ -9,7 +9,7 @@ import exceptions
 import utils
 import db
 
-app = Flask(__name__, static_folder='../build')
+app = Flask(__name__, static_folder='../build', static_url_path='/')
 app.config["MONGO_URI"] = os.environ["MONGO_URI"]
 
 try:
