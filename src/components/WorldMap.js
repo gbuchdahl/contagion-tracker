@@ -171,6 +171,8 @@ class WorldMap extends Component {
           ></button>
         </div>
         <LinearGradient data={gradientData}></LinearGradient>
+        <div className="card">
+
         <ComposableMap>
           <ZoomableGroup zoom={1}>
             <Geographies geography={geoData}>
@@ -192,6 +194,8 @@ class WorldMap extends Component {
             </Geographies>
           </ZoomableGroup>
         </ComposableMap>
+        </div>
+
       </Container>
     );
   }
