@@ -40,7 +40,7 @@ const USModalCard = (props) => {
             COVID Factsheet
           </h3>
           <div className="columns">
-            <div className="column is-4">
+            <div className="column is-5">
               <ul>
                 <li>
                   <span class="icon">
@@ -85,7 +85,7 @@ const USModalCard = (props) => {
             </div>
           </div>
           <h3 className="has-text-weight-semibold is-size-4 mt-0 mb-2">
-            Viral Trends:
+            Regional Viral Trends:
           </h3>
         <Cloud />
         </section>

@@ -3,7 +3,7 @@ import { Hero, Container } from "react-bulma-components";
 
 const Banner = () => {
   return (
-    <Hero className="mb-5 is-warning is-bold is-medium">
+    <Hero className="mb-5 is-warning is-bold is-small">
       <Container className="hero-body has-text-centered">
         <h1 className="title is-size-1">
           <span className="icon mr-5">
