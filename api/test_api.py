@@ -145,6 +145,11 @@ def test_get_by_country_with_date_out_of_range(client):
     r = client.get(URL_BASE.format("world/GBR?date=10_05_2100"))
     assert r.status_code == 404
 
+def test_get_by_country_with_all_valid_states(client):
+    for code in COUNTRY_CODES:
+        r = client.get(URL_BASE.format("world/{}".format(code)))
+        assert r.status_code == 200
+        assert r.is_json
 
 def test_get_dpm_by_country_with_GET(client):
     r = client.get(URL_BASE.format("world-dpm/JAM"))
