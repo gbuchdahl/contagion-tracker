@@ -81,7 +81,6 @@ def get_us_dpm_by_date(date):
     raise DocumentNotFoundException()
 
 
-# TODO: fix error with aggregation and StopIteration
 def get_dpm_by_state_and_date(stateCode, date):
     """
     return document from db_.covid_us with 'state_code' field
@@ -170,7 +169,8 @@ def get_dpm_by_state_and_date(stateCode, date):
         for r in res:
             res = r
             break
-        return res
+        if type(res) == dict:
+            return res
     raise DocumentNotFoundException() 
 
 def get_by_state_and_date(stateCode, date):
@@ -274,7 +274,8 @@ def get_dpm_by_country_and_date(countryCode, date):
         for r in res:
             res = r
             break
-        return res
+        if type(res) == dict:
+            return res
     raise DocumentNotFoundException() 
 
 

@@ -134,3 +134,7 @@ def handle_date_error(error):
     return jsonify(error.to_dict()), error.get_status()
 
 
+@app.errorhandler(404)
+def handle_404(error):
+    e = exceptions.UnknownRouteException(request.url)
+    return jsonify(e.to_dict()), e.get_status()

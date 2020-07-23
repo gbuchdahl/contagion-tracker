@@ -44,3 +44,9 @@ class InvalidRequestException(APIException):
     def __init__(self, request_type, status_code=None, payload=None):
         self.message = "{} request not valid at this endpoint".format(country_code)
         APIException.__init__(self, self.message, status_code, payload)
+
+class UnknownRouteException(APIException):
+    status_code = 404
+    def __init__(self, route, status_code=None, payload=None):
+        self.message = "No content found at {}".format(route)
+        APIException.__init__(self, self.message, status_code, payload)
