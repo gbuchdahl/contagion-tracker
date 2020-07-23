@@ -3,6 +3,7 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Container } from "react-bulma-components";
 import { scaleLinear } from "d3-scale";
 import Slider from "./Slider";
+import CountryModalCard from './CountryModalCard';
 
 // import '../data/countries.json'
 
@@ -50,9 +51,15 @@ class WorldMap extends Component {
     this.state = {
       date: epoch,
       fills: gray,
+      index: undefined,
+      modal: false,
+      data: undefined
     };
 
     this.fetchFills = this.fetchFills.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.setIndex = this.setIndex.bind(this);
+    this.generateData = this.generateData.bind(this);
     this.fetchFills(epoch);
   }
 
@@ -81,6 +88,40 @@ class WorldMap extends Component {
     this.setState({ fills });
   }
 
+  toggleModal = () => {
+    let setting = !(this.state.modal)
+    this.setState({modal: setting})
+    this.generateData(this.state.date, codes[this.state.index])
+    // if (this.state.modal !== false){
+    //   this.generateData(this.state.date, codes[this.state.index])
+    // }
+  }
+
+  setIndex = (ind) => {
+    this.setState({index: ind});
+  }
+
+  buildQuery = (date, code) => {
+    return (
+        "/world/" + code + "?date=" +
+        date.getDate() +
+        "_" +
+        (date.getMonth() + 1) +
+        "_" +
+        (date.getYear() + 1900)
+      );
+    }
+
+  generateData = async (date, code) => {
+    if (code === undefined) {return ""}
+    let query = this.buildQuery(date, code)
+
+    let newData = await fetch(query).then((response) =>
+    response.json());
+
+    this.setState({data: newData})
+  }
+
   render() {
     return (
       <Container>
@@ -88,6 +129,11 @@ class WorldMap extends Component {
           {this.state.date.toDateString().slice(4)}
         </h2>
         <Slider num_days={NUM_DAYS} update={this.updateVal} />
+        <div className={(this.state.modal === true) ? "modal is-active" : "modal"}>
+            <div onClick={this.toggleModal} className="modal-background"></div>
+            <CountryModalCard {... this.state.data}/>
+            <button onClick={this.toggleModal} className="modal-close is-large" aria-label="close"></button>
+        </div>
         <ComposableMap>
           <Geographies geography={geoData}>
             {({ geographies }) =>
@@ -98,6 +144,9 @@ class WorldMap extends Component {
                     geography={geo}
                     fill={this.state.fills[index]}
                     stroke="#FFF"
+                    onMouseEnter={() => this.setIndex(index)}
+                    onMouseLeave={()=> this.setIndex(undefined)}
+                    onClick={() => this.toggleModal()}
                   />
                 );
               })
