@@ -3,7 +3,7 @@ import Cloud from "./WordCloud.js";
 
 const USModalCard = (props) => {
   let date = new Date(props.date);
-  date.setDate(date.getDate() +1 );
+  date.setDate(date.getDate() + 1);
   if (props.error === "Document not found") {
     return (
       <div className="modal-card">
@@ -31,15 +31,17 @@ const USModalCard = (props) => {
       <div className="modal-card">
         <header className="modal-card-head">
           <p className="modal-card-title">
-            <span className="has-text-weight-bold">{props.location} COVID Factsheet {" "}</span> |{" "}
+            <span className="has-text-weight-bold">{props.location} </span> |{" "}
             {date.toDateString().slice(4)}
           </p>
         </header>
         <section className="modal-card-body">
+          <h3 className="has-text-weight-semibold is-size-4 mt-0 mb-2">
+            COVID Factsheet
+          </h3>
           <ul>
-          <li>
-              <strong>New Tests:</strong>{" "}
-              {props.new_tests.toLocaleString("en")}
+            <li>
+              <strong>New Tests:</strong> {props.new_tests.toLocaleString("en")}
             </li>
             <li>
               <strong>New Cases:</strong> {props.new_cases.toLocaleString("en")}

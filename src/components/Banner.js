@@ -14,7 +14,9 @@ const Banner = () => {
             <i className="fas fa-radiation-alt"></i>
           </span>
         </h1>
-        <h3 className="subtitle is-size-5 has-text-grey mt-2">Visualizing "viral" trends across the world.</h3>
+        <h3 className="subtitle is-size-5 has-text-grey mt-2">
+          Visualizing "viral" trends across the world.
+        </h3>
       </Container>
     </Hero>
   );

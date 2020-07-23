@@ -171,27 +171,29 @@ class WorldMap extends Component {
           ></button>
         </div>
         <LinearGradient data={gradientData}></LinearGradient>
-        <ComposableMap>
-          <ZoomableGroup zoom={1}>
-            <Geographies geography={geoData}>
-              {({ geographies }) =>
-                geographies.map((geo, index) => {
-                  return (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill={this.state.fills[index]}
-                      stroke="#FFF"
-                      onMouseEnter={() => this.setIndex(index)}
-                      onMouseLeave={() => this.setIndex(undefined)}
-                      onClick={() => this.toggleModal()}
-                    />
-                  );
-                })
-              }
-            </Geographies>
-          </ZoomableGroup>
-        </ComposableMap>
+        <div className="card mb-5">
+          <ComposableMap>
+            <ZoomableGroup zoom={1}>
+              <Geographies geography={geoData}>
+                {({ geographies }) =>
+                  geographies.map((geo, index) => {
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={this.state.fills[index]}
+                        stroke="#FFF"
+                        onMouseEnter={() => this.setIndex(index)}
+                        onMouseLeave={() => this.setIndex(undefined)}
+                        onClick={() => this.toggleModal()}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+        </div>
       </Container>
     );
   }

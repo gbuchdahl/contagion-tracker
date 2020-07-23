@@ -14,7 +14,7 @@ import { scaleLinear } from "d3-scale";
 
 import allStates from "../data/allStates.json";
 import LinearGradient from "./LinearGradient.js";
-import USModalCard from './USModalCard'
+import USModalCard from "./USModalCard";
 
 // const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
 
@@ -82,8 +82,8 @@ class USMap extends Component {
       date: epoch,
       fills: gray,
       data: undefined,
-      state: undefined, 
-      modal: false
+      state: undefined,
+      modal: false,
     };
 
     this.fetchFills = this.fetchFills.bind(this);
@@ -93,7 +93,7 @@ class USMap extends Component {
   }
 
   updateVal = async (val) => {
-    let newDate = new Date(2020, 2, parseInt(val)+15);
+    let newDate = new Date(2020, 2, parseInt(val) + 15);
     this.setState({ date: newDate });
     await this.fetchFills(this.state.date);
   };
@@ -172,61 +172,64 @@ class USMap extends Component {
             aria-label="close"
           ></button>
         </div>
-
         <LinearGradient data={gradientData}></LinearGradient>
-        <ComposableMap projection="geoAlbersUsa">
-          <ZoomableGroup zoom={1}>
-            <Geographies geography={geoData}>
-              {({ geographies }) => (
-                <>
-                  {geographies.map((geo, index) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      stroke="#FFF"
-                      geography={geo}
-                      fill={this.state.fills[index]}
-                      onMouseEnter={() => this.setState({state: states[index]})}
-                      onMouseLeave={()=> this.setState({state: undefined})}
-                      onClick={() => this.toggleModal()}
-                    />
-                  ))}
-                  {geographies.map((geo) => {
-                    const centroid = geoCentroid(geo);
-                    const cur = allStates.find((s) => s.val === geo.id);
-                    return (
-                      <g key={geo.rsmKey + "-name"}>
-                        {cur &&
-                          centroid[0] > -160 &&
-                          centroid[0] < -67 &&
-                          (Object.keys(offsets).indexOf(cur.id) === -1 ? (
-                            <Marker coordinates={centroid}>
-                              <text y="2" fontSize={14} textAnchor="middle">
-                                {cur.id}
-                              </text>
-                            </Marker>
-                          ) : (
-                            <Annotation
-                              subject={centroid}
-                              dx={offsets[cur.id][0]}
-                              dy={offsets[cur.id][1]}
-                            >
-                              <text
-                                x={4}
-                                fontSize={14}
-                                alignmentBaseline="middle"
+        <div className="card mb-5">
+          <ComposableMap projection="geoAlbersUsa">
+            <ZoomableGroup zoom={1}>
+              <Geographies geography={geoData}>
+                {({ geographies }) => (
+                  <>
+                    {geographies.map((geo, index) => (
+                      <Geography
+                        key={geo.rsmKey}
+                        stroke="#FFF"
+                        geography={geo}
+                        fill={this.state.fills[index]}
+                        onMouseEnter={() =>
+                          this.setState({ state: states[index] })
+                        }
+                        onMouseLeave={() => this.setState({ state: undefined })}
+                        onClick={() => this.toggleModal()}
+                      />
+                    ))}
+                    {geographies.map((geo) => {
+                      const centroid = geoCentroid(geo);
+                      const cur = allStates.find((s) => s.val === geo.id);
+                      return (
+                        <g key={geo.rsmKey + "-name"}>
+                          {cur &&
+                            centroid[0] > -160 &&
+                            centroid[0] < -67 &&
+                            (Object.keys(offsets).indexOf(cur.id) === -1 ? (
+                              <Marker coordinates={centroid}>
+                                <text y="2" fontSize={14} textAnchor="middle">
+                                  {cur.id}
+                                </text>
+                              </Marker>
+                            ) : (
+                              <Annotation
+                                subject={centroid}
+                                dx={offsets[cur.id][0]}
+                                dy={offsets[cur.id][1]}
                               >
-                                {cur.id}
-                              </text>
-                            </Annotation>
-                          ))}
-                      </g>
-                    );
-                  })}
-                </>
-              )}
-            </Geographies>
-          </ZoomableGroup>
-        </ComposableMap>
+                                <text
+                                  x={4}
+                                  fontSize={14}
+                                  alignmentBaseline="middle"
+                                >
+                                  {cur.id}
+                                </text>
+                              </Annotation>
+                            ))}
+                        </g>
+                      );
+                    })}
+                  </>
+                )}
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+        </div>
       </Container>
     );
   }

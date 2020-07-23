@@ -21,10 +21,8 @@ const MyFooter = () => {
           detailed documentation){" "}
           <a href="https://github.com/gbuchdahl/contagion-tracker">here</a>.
         </div>
-        </div>
-<div>
-
-
+      </div>
+      <div>
         <Level className="level">
           <div className="level-item">
             <img src="../../img/mongodb.png" alt="MongoDB" width="200"></img>

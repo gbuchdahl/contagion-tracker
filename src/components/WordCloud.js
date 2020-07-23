@@ -1,7 +1,7 @@
 import WordCloud from "./wordcloud2";
 import React from "react";
 
-  class Cloud extends React.Component {
+class Cloud extends React.Component {
     componentDidMount() {
         this.updateCanvas();
     }
@@ -24,4 +24,3 @@ import React from "react";
 }
 
 export default Cloud;
-
