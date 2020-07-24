@@ -56,3 +56,10 @@ class InvalidWindowException(APIException):
     def __init__(self, window, status_code=None, payload=None):
         self.message = "Window size: {} not valid".format(window)
         APIException.__init__(self, self.message, status_code, payload)
+
+
+class InvalidSizeException(APIException):
+    status_code = 400
+    def __init__(self, maxSize, status_code=None, payload=None):
+        self.message = "maxSize: {} not valid".format(maxSize)
+        APIException.__init__(self, self.message, status_code, payload)

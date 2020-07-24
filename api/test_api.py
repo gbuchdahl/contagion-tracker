@@ -353,3 +353,26 @@ def test_get_world_cpm_by_date_with_date_out_of_range(client):
     assert r.status_code == 200 
     assert r.get_json().get("len") == 0
 
+def test_get_world_hashtag_popularity(client):
+    r = client.get(URL_BASE.format("world-hashtag-popularity/GBR?date=05_07_2020&maxSize=100"))
+    assert r.status_code == 200
+    doc = r.get_json()
+    assert doc.get("len") == 100
+    assert doc.get("date")
+    assert doc.get("val")
+    exampleDoc = doc.get("val")[0]
+    assert exampleDoc.get("popularity") is not None
+    assert exampleDoc.get("hashtag") is not None
+    assert exampleDoc.get("region_code") is not None
+
+def test_get_world_hashtags(client):
+    r = client.get(URL_BASE.format("world-hashtags/USA?date=05_07_2020"))
+    assert r.status_code == 200
+    doc = r.get_json()
+    assert doc.get("date")
+    assert doc.get("len") == 100
+    assert doc.get("val")
+    exampleDoc = doc.get("val")[0]
+    assert exampleDoc.get("hashtag") is not None
+    assert exampleDoc.get("frequency_per_thousand") is not None
+    assert exampleDoc.get("region_code") is not None
