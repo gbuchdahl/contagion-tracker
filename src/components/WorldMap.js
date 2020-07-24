@@ -33,7 +33,7 @@ const MAX_DEATHS = 5;
 const MAX_CASES = 100;
 
 // MAX_SIZE for Twitter Data
-const MAX_SIZE = 60;
+const MAX_SIZE = 100;
 
 const colorScaleDeaths = scaleLinear()
   .domain([0, MAX_DEATHS])
@@ -63,19 +63,18 @@ const gradientDataCases = {
 
 const options = {
   fontFamily: "sans-serif",
-  // ellipticity: 0.4,
-  // shrinkToFit: true,
-  // shuffle: true,
+  rotations: 0,
   rotationAngles: [0, 0.0001 ]
-  // color: (word) => {
-  //   return word.match(/(covid|corona|lockdown|pandemic)/g) ? "#F00" : "#000";
-  // }
 }
 
 const callbacks = {
   getWordColor: (word) => {
-      return word["text"].match(/(covid|corona|lockdown|pandemic)/g) ? "#F00" : "#000";
-    }
+      return word["text"].match(/(covid|corona|lockdown|pandemic|socialdist|virus)/g) ? "#F00" : "#000";
+    },
+  onWordClick: (word) => {
+    const url = `https://twitter.com/search?lang=en&q=(%23${word["text"].substr(1)})&src=typed_query`;
+    window.open(url, '_blank');
+  }
 }
 
 // 3 digit country codes, taken from the thing that made the map
@@ -276,7 +275,10 @@ class WorldMap extends Component {
             {...this.state.twitter}
             {...this.state.data}
           >
-            {this.state.twitter !== [] && <ReactWordcloud options={options} words={this.state.twitter} callbacks={callbacks}></ReactWordcloud>}
+          {this.state.twitter !== [] && 
+          <div style={{ backgroundColor: '#efefef', height: '300px', width: '100%' }}>
+            <ReactWordcloud options={options} words={this.state.twitter} callbacks={callbacks}></ReactWordcloud>
+          </div>}
           </CountryModalCard>
           <button
             onClick={this.toggleModal}
