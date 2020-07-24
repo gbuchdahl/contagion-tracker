@@ -4,28 +4,36 @@ import React from "react";
 class Cloud extends React.Component {
   constructor (props) {
     super(props);
+    // console.log(props);
     this.state = {
-      msg: undefined
+      msg: undefined,
+      freqs: []
     };
+
+    // TODO: Construct freqs list from object
+    this.convertDocToList = this.convertDocToList.bind(this);
+    this.updateCanvas = this.updateCanvas.bind(this);
   }
 
-  componentDidMount() {
+  convertDocToList = () => {
+    this.props.val.map((el) => [el.hashtag, el.popularity]);
+  }
+
+  componentDidMount = () => {
     this.updateCanvas();
   }
-  updateCanvas() {
-    const freqs = [
-      ["#blacklivesmatter", 60.5],
-      ["#covid19", 57],
-      ["#lfcchampions", 30],
-      ["#coronavirus", 50],
-      ["#georgefloyd", 30],
-      ["#lockdown", 20]
-    ];
-
+  updateCanvas = () => {
     this.setState({"msg": undefined});
+    if (this.props.val) {
+      this.setState({freqs: this.convertDocToList()});
+      console.log(this.state.freqs);
+    }
+    else
+      console.log("no data");
+
 
     const options = {
-      list: freqs,
+      list: this.state.freqs,
       fontFamily: "sans-serif",
       ellipticity: 0.4,
       shrinkToFit: true,
@@ -48,11 +56,12 @@ class Cloud extends React.Component {
       } 
     };
 
-    WordCloud(this.refs.canvas, options);
+    return WordCloud(document.getElementById('my_canvas'), options);
   }
   render() {
     return (
       <div>
+        <p>{this.props.val["hi"]}</p>
         <canvas ref="canvas" width={600} height={300} />
         { this.state.msg && 
         <p>

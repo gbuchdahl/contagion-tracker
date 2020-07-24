@@ -11,6 +11,9 @@ import Slider from "./Slider";
 
 import LinearGradient from "./LinearGradient.js";
 import CountryModalCard from "./CountryModalCard";
+import ReactWordcloud from 'react-wordcloud';
+import {cloneDeep} from "lodash"
+
 
 // import '../data/countries.json'
 
@@ -28,6 +31,9 @@ const NUM_DAYS = (end.getTime() - epoch.getTime()) / (1000 * 3600 * 24);
 const MAX_DEATHS = 5;
 
 const MAX_CASES = 100;
+
+// MAX_SIZE for Twitter Data
+const MAX_SIZE = 100;
 
 const colorScaleDeaths = scaleLinear()
   .domain([0, MAX_DEATHS])
@@ -55,6 +61,22 @@ const gradientDataCases = {
 };
 
 
+const options = {
+  fontFamily: "sans-serif",
+  rotations: 0,
+  rotationAngles: [0, 0.0001 ]
+}
+
+const callbacks = {
+  getWordColor: (word) => {
+      return word["text"].match(/(covid|corona|lockdown|pandemic|socialdist|virus)/g) ? "#F00" : "#000";
+    },
+  onWordClick: (word) => {
+    const url = `https://twitter.com/search?lang=en&q=(%23${word["text"].substr(1)})&src=typed_query`;
+    window.open(url, '_blank');
+  }
+}
+
 // 3 digit country codes, taken from the thing that made the map
 const codes = geoData["objects"]["ne_110m_admin_0_countries"]["geometries"].map(
   (country) => country["properties"]["ISO_A3"]
@@ -73,6 +95,7 @@ class WorldMap extends Component {
       index: undefined,
       modal: false,
       data: undefined,
+      twitter: [],
       stat: "cases",
       window: 1,
     };
@@ -123,10 +146,11 @@ class WorldMap extends Component {
     this.setState({ fills });
   }
 
-  toggleModal = () => {
+  toggleModal = async() => {
     let setting = !this.state.modal;
+    await this.generateData(this.state.date, codes[this.state.index]);
+    // this.setState({twitter: twitterData});
     this.setState({ modal: setting });
-    this.generateData(this.state.date, codes[this.state.index]);
   };
 
   setIndex = (ind) => {
@@ -173,6 +197,22 @@ class WorldMap extends Component {
     return querystring;
   };
 
+  // TODO
+  buildTwitterQuery = (date, code, maxSize) => {
+    return (
+      "/world-hashtag-popularity/" +
+      code +
+      "?date=" +
+      date.getDate() +
+      "_" +
+      (date.getMonth() + 1) +
+      "_" +
+      (date.getYear() + 1900) + 
+      "&maxSize=" +
+      maxSize
+    );
+  };
+
   generateData = async (date, code) => {
     if (code === undefined) {
       return "";
@@ -185,6 +225,31 @@ class WorldMap extends Component {
       newData["date"] = date;
     }
     this.setState({ data: newData });
+
+    let twitterQuery = this.buildTwitterQuery(date, code, MAX_SIZE);
+
+    let twitterData = await fetch(twitterQuery).then((response) => response.json());
+    if (twitterData.error === "Document not found") {
+      twitterData["code"] = code;
+      twitterData["date"] = date;
+      twitterData["val"] = [];
+    }
+    let words = [];
+    if (!twitterData["val"]) {
+      twitterData["val"] = []
+    }
+    words = twitterData["val"].map((doc) => {
+      let new_doc = {
+        "text": doc.hashtag,
+        "value": parseInt(doc.popularity),
+      };
+      if (new_doc.hashtag === undefined) {
+        doc.hashtag = "";
+      }
+      return new_doc;
+    });
+
+    this.setState({ twitter: words });
   };
 
   handleUSA = () => {
@@ -207,8 +272,14 @@ class WorldMap extends Component {
           <CountryModalCard
             handleUSA={this.handleUSA}
             handle={() => this.setState({ modal: false })}
+            {...this.state.twitter}
             {...this.state.data}
-          />
+          >
+          {this.state.twitter !== [] && 
+          <div style={{ backgroundColor: '#efefef', height: '300px', width: '100%' }}>
+            <ReactWordcloud options={options} words={this.state.twitter} callbacks={callbacks}></ReactWordcloud>
+          </div>}
+          </CountryModalCard>
           <button
             onClick={this.toggleModal}
             className="modal-close is-large"
