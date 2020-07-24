@@ -713,15 +713,14 @@ def get_us_cpm_avg_by_date(date, windowSize):
         return rv
     raise DocumentNotFoundException()
 
-def get_hashtags_by_country(countryCode, date, maxSize):
-    regionDoc = db_.world_countries.find_one(
-            {"country_code": countryCode.upper()},
-            {"_id":0, "region_code": 1})
-    print(regionDoc)
+def get_hashtags_by_country(countryCode, date):
+    from country_regions import COUNTRY_REGIONS
+    region = COUNTRY_REGIONS[countryCode.upper()]
+    del(COUNTRY_REGIONS)
     pipeline = [
         {
             '$match': {
-                'region_code': regionDoc["region_code"], 
+                'region_code': region,
                 'start_date': {
                     '$lte': date
                 }, 
@@ -729,15 +728,20 @@ def get_hashtags_by_country(countryCode, date, maxSize):
                     '$gte': date
                 }
             }
-        }, {
-            '$limit': 100
-        }, {
+        },
+        {
             '$sort': {
                 'frequency_per_thousand': -1
             }
-        }, {
+        },
+        {
+            '$limit': 100
+        },
+        {
             "$project": {
                 "_id": 0,
+                "start_date": 0,
+                "end_date": 0
                 }
             }
     ]
@@ -746,4 +750,95 @@ def get_hashtags_by_country(countryCode, date, maxSize):
         resList = list(res)
         rv = {"date": date, "len": len(resList), "val": resList}
         return rv
+    raise DocumentNotFoundException()
+
+
+def get_hashtag_pop_by_country(countryCode, date, maxSize):
+    from country_regions import COUNTRY_REGIONS
+    region = COUNTRY_REGIONS[countryCode.upper()]
+    del COUNTRY_REGIONS
+    maxFPTpipeline = [
+        {
+            '$match': {
+                'region_code': region, 
+                'start_date': {
+                    '$lte': date
+                }, 
+                'end_date': {
+                    '$gte': date
+                }
+            }
+        },
+        {
+            '$sort': {
+                'frequency_per_thousand': -1
+            }
+        },
+        {
+            '$limit': 1
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "frequency_per_thousand": 1
+                }
+            }
+    ]
+    maxFPTDoc= db_.hashtags.aggregate(maxFPTpipeline)
+    if maxFPTDoc:
+        for d in maxFPTDoc:
+            maxFPTDoc = d
+            break
+        print(maxFPTDoc)
+
+        resultPipeline = [
+            {
+                '$match': {
+                    'region_code': region, 
+                    'start_date': {
+                        '$lte': date
+                    }, 
+                    'end_date': {
+                        '$gt': date
+                    }
+                }
+            }, {
+                '$sort': {
+                    'frequency_per_thousand': -1
+                }
+            },
+            {
+                '$limit': 100
+            },
+            {
+                "$addFields": {
+                    "popularity": {
+                        "$multiply": [
+                            maxSize,
+                            {
+                                "$divide": [
+                                        "$frequency_per_thousand", 
+                                        maxFPTDoc.get("frequency_per_thousand")
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+            {
+                "$project": {
+                    "_id": 0,
+                    "frequency_per_thousand": 0,
+                    "start_date": 0,
+                    "end_date": 0
+                    }
+                }
+        ]
+        res = db_.hashtags.aggregate(resultPipeline)
+        print(res)
+        if res:
+            resList = list(res)
+            print(resList)
+            rv = {"date": date, "len": len(resList), "val": resList}
+            return rv
     raise DocumentNotFoundException()
