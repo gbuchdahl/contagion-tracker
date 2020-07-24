@@ -47,7 +47,7 @@ const USModalCard = (props) => {
                     <i class="fas fa-vials"></i>
                   </span>
                   <strong> New Tests:</strong>{" "}
-                  {props.new_cases.toLocaleString("en")}
+                  {props.new_tests.toLocaleString("en")}
                 </li>
                 <li>
                   <span class="icon">
