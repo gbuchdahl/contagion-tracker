@@ -4,6 +4,8 @@ Visualizing the spread of all types of infections.
 
 A MongoDB Hackathon project by Warren James, Nalin Ranjan, and Gabriel Buchdahl.
 
+![Screenshot](screen.png "Cube Timer")
+
 ## To run application:
 
 `source venv/bin/activate`
