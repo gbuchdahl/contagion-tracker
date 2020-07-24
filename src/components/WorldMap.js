@@ -29,6 +29,9 @@ const MAX_DEATHS = 5;
 
 const MAX_CASES = 100;
 
+// MAX_SIZE for Twitter Data
+const MAX_SIZE = 60;
+
 const colorScaleDeaths = scaleLinear()
   .domain([0, MAX_DEATHS])
   .range(["#e5e5e5", "#ff5233"]);
@@ -73,6 +76,7 @@ class WorldMap extends Component {
       index: undefined,
       modal: false,
       data: undefined,
+      twitter: undefined,
       stat: "cases",
       window: 1,
     };
@@ -123,10 +127,11 @@ class WorldMap extends Component {
     this.setState({ fills });
   }
 
-  toggleModal = () => {
+  toggleModal = async() => {
     let setting = !this.state.modal;
+    let twitterData = await this.generateData(this.state.date, codes[this.state.index]);
+    this.setState({twitter: twitterData});
     this.setState({ modal: setting });
-    this.generateData(this.state.date, codes[this.state.index]);
   };
 
   setIndex = (ind) => {
@@ -173,6 +178,22 @@ class WorldMap extends Component {
     return querystring;
   };
 
+  // TODO
+  buildTwitterQuery = (date, code, maxSize) => {
+    return (
+      "/world-hashtag-popularity/" +
+      code +
+      "?date=" +
+      date.getDate() +
+      "_" +
+      (date.getMonth() + 1) +
+      "_" +
+      (date.getYear() + 1900) + 
+      "&maxSize=" +
+      maxSize
+    );
+  };
+
   generateData = async (date, code) => {
     if (code === undefined) {
       return "";
@@ -185,6 +206,18 @@ class WorldMap extends Component {
       newData["date"] = date;
     }
     this.setState({ data: newData });
+
+    let twitterQuery = this.buildTwitterQuery(date, code, MAX_SIZE);
+
+    let twitterData = await fetch(twitterQuery).then((response) => response.json());
+    if (twitterData.error === "Document not found") {
+      twitterData["code"] = code;
+      twitterData["date"] = date;
+    }
+    //this.setState({ twitter: twitterData });
+    console.log(this.state.twitter); //SHOWS UP
+
+    return twitterData
   };
 
   handleUSA = () => {
@@ -207,6 +240,7 @@ class WorldMap extends Component {
           <CountryModalCard
             handleUSA={this.handleUSA}
             handle={() => this.setState({ modal: false })}
+            {...this.state.twitter}
             {...this.state.data}
           />
           <button

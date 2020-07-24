@@ -5,27 +5,31 @@ class Cloud extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      msg: undefined
+      msg: undefined,
+      freqs: []
     };
+
+    // TODO: Construct freqs list from object
+    this.convertDocToList = this.convertDocToList.bind(this);
+  }
+
+  convertDocToList = () => {
+    this.props.val.map((el) => [el.hashtag, el.popularity]);
   }
 
   componentDidMount() {
     this.updateCanvas();
   }
   updateCanvas() {
-    const freqs = [
-      ["#blacklivesmatter", 60.5],
-      ["#covid19", 57],
-      ["#lfcchampions", 30],
-      ["#coronavirus", 50],
-      ["#georgefloyd", 30],
-      ["#lockdown", 20]
-    ];
-
     this.setState({"msg": undefined});
+    if (this.props.val) {
+      this.setState({freqs: this.convertDocToList()});
+    }
+    else
+      console.log("no data");
 
     const options = {
-      list: freqs,
+      list: this.state.freqs,
       fontFamily: "sans-serif",
       ellipticity: 0.4,
       shrinkToFit: true,

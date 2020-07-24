@@ -22,6 +22,8 @@ const CountryModalCard = (props) => {
     );
   }
   if (props.new_cases !== undefined) {
+    console.log(props.val); // SHOWS UP
+    const data = (props.val) ? [...props.val] : [];
     return (
       <div className="modal-card">
         <header className="modal-card-head">
@@ -90,7 +92,7 @@ const CountryModalCard = (props) => {
           <h3 className="has-text-weight-semibold is-size-4 mt-0 mb-2">
             Regional Viral Trends:
           </h3>
-        <Cloud />
+        <Cloud val={data} />
         </section>
         <section className="modal-card-foot">
           <p className="button is-warning" onClick={props.handle}>
