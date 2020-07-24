@@ -69,7 +69,7 @@ const options = {
 
 const callbacks = {
   getWordColor: (word) => {
-      return word["text"].match(/(covid|corona|lockdown|pandemic|socialdist|virus)/g) ? "#F00" : "#000";
+      return word["text"].match(/(covid|corona|lockdown|pandemic|socialdist|virus)/g) ? "#FF0000" : "#000000";
     },
   onWordClick: (word) => {
     const url = `https://twitter.com/search?lang=en&q=(%23${word["text"].substr(1)})&src=typed_query`;
