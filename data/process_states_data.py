@@ -9,7 +9,7 @@ def remove_quotes(arr):
 
     return arr
 
-user = "readuser"
+user = "writeuser"
 password = getpass.getpass()
 uri = "mongodb+srv://{}:{}@data.ybs5g.mongodb.net/?retryWrites=true&w=majority".format(user, password)
 
