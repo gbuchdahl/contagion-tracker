@@ -3,7 +3,7 @@ import getpass
 import csv
 from datetime import datetime
 
-user = "readuser"
+user = "writeuser"
 password = getpass.getpass()
 uri = "mongodb+srv://{}:{}@data.ybs5g.mongodb.net/?retryWrites=true&w=majority".format(user, password)
 
