@@ -23,7 +23,7 @@ locations = [("NAMR", "43, -102", "4500km"), ("SAMR", "-25, -61", "4250km"), ("E
              ("EAS", "43.1, 124", "3500km"), ("OCN", "-12.5, 136.9", "5000km")]
 
 # MongoDB Connection
-user = "readuser"
+user = "writeuser"
 password = getpass.getpass()
 uri = "mongodb+srv://{}:{}@data.ybs5g.mongodb.net/?retryWrites=true&w=majority".format(user, password)
 client = MongoClient(uri)
